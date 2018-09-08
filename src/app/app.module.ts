@@ -6,6 +6,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 
 // user-defined modules
 import { MaterialModule } from './material/material.module';
+import { AppRoutingModule } from './app-routing.module';
 
 // user-defined components
 import { AppComponent } from './app.component';
@@ -21,7 +22,8 @@ import { NavigationComponent } from './navigation/navigation.component';
     BrowserModule,
     BrowserAnimationsModule,
     LayoutModule,
-    MaterialModule
+    MaterialModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
