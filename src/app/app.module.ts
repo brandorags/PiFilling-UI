@@ -10,15 +10,15 @@ import { AppRoutingModule } from './app-routing.module';
 
 // user-defined components
 import { AppComponent } from './app.component';
-import { NavigationComponent } from './navigation/navigation.component';
 import { LoginComponent } from './login/login.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavigationComponent,
-    LoginComponent
+    LoginComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
