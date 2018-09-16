@@ -1,3 +1,15 @@
-<p>
-  login works!
-</p>
+<div class="center">
+  <form (ngSubmit)="loginUser()" #loginUserForm="ngForm">
+    <mat-form-field>
+      <input type="text" name="username" placeholder="Username" matInput 
+      [(ngModel)]="user.username" #username="ngModel">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input type="password" name="password" placeholder="Password" matInput
+      [(ngModel)]="user.password" #password="ngModel">
+    </mat-form-field>
+    <br>
+    <button type="submit" mat-button>Submit</button>
+  </form>
+</div>
