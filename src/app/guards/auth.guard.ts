@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
       this.sessionTimerService.refreshTimer();
       return true;
     } else {
-      this.router.navigate(['/']);
+      this.router.navigate(['/login']);
     }
 
     return false;
