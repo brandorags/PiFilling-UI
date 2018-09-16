@@ -2,5 +2,6 @@
 
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://yoururlhere.com'
+  apiBaseUrl: 'https://yoururlhere.com',
+  lengthOfSession: 900
 };
