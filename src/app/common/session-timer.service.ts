@@ -30,7 +30,7 @@ export class SessionTimerService {
         this.stopTimer();
         this.authService.logout().subscribe(
           success => {
-            this.router.navigate(['/']);
+            this.router.navigate(['/login']);
           },
           error => {
             console.log(error.message);

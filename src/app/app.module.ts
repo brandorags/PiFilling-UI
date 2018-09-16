@@ -23,7 +23,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { NotFoundComponent } from './not-found/not-found.component';
-import { NavigationComponent } from './navigation/navigation.component';
+import { FileComponent } from './file/file.component';
 
 
 @NgModule({
@@ -31,7 +31,7 @@ import { NavigationComponent } from './navigation/navigation.component';
     AppComponent,
     LoginComponent,
     NotFoundComponent,
-    NavigationComponent
+    FileComponent
   ],
   imports: [
     BrowserModule,
