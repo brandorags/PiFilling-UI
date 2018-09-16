@@ -6,10 +6,10 @@ import { MatButtonModule,
   MatIconModule,
   MatListModule,
   MatFormFieldModule,
-  MatInputModule, 
-  MatGridListModule, 
-  MatCardModule, 
-  MatMenuModule 
+  MatInputModule,
+  MatGridListModule,
+  MatCardModule,
+  MatMenuModule
 } from '@angular/material';
 
 
