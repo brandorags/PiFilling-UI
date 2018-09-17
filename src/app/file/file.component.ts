@@ -1,13 +1,16 @@
-import { Component } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
 import { Breakpoints, BreakpointState, BreakpointObserver } from '@angular/cdk/layout';
+
+import { map } from 'rxjs/operators';
+
+import { FileService } from './file.service';
 
 @Component({
   selector: 'app-file',
   templateUrl: './file.component.html',
   styleUrls: ['./file.component.scss']
 })
-export class FileComponent {
+export class FileComponent implements OnInit {
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
@@ -29,5 +32,32 @@ export class FileComponent {
     })
   );
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private fileService: FileService
+  ) { }
+
+  ngOnInit() {
+  }
+
+  upload(files: any): void {
+    if (files.length === 0) {
+      return;
+    }
+
+    let formData = new FormData();
+    for (let file of files) {
+      formData.append(file.name, file, file.name);
+    }
+
+    this.fileService.upload(formData).subscribe(
+      response => {
+        console.log(response);
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
 }
