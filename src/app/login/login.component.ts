@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 import { User } from '../models/login/user';
 import { AuthenticationService } from '../common/authentication.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private snackBar: MatSnackBar,
     private authService: AuthenticationService
   ) { }
 
@@ -26,7 +27,7 @@ export class LoginComponent implements OnInit {
       .subscribe(
         user => {
           this.router.navigate(['/files']);
-          console.log(`Welcome, ${user.username}!`);
+          this.snackBar.open(`Welcome, ${user.username}!`);
         },
         error => {
           console.log(error.message);
