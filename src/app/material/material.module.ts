@@ -9,7 +9,9 @@ import { MatButtonModule,
   MatInputModule,
   MatGridListModule,
   MatCardModule,
-  MatMenuModule
+  MatMenuModule,
+  MatSnackBarModule,
+  MAT_SNACK_BAR_DEFAULT_OPTIONS
 } from '@angular/material';
 
 
@@ -25,7 +27,8 @@ import { MatButtonModule,
     MatInputModule,
     MatGridListModule,
     MatCardModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSnackBarModule
   ],
   exports: [
     MatButtonModule,
@@ -38,7 +41,11 @@ import { MatButtonModule,
     MatInputModule,
     MatGridListModule,
     MatCardModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSnackBarModule
+  ],
+  providers: [
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } }
   ]
 })
 export class MaterialModule { }
