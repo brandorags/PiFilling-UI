@@ -1,5 +1,5 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav *ngIf="isUserLoggedIn"
+<mat-sidenav-container *ngIf="isUserLoggedIn" class="sidenav-container">
+  <mat-sidenav
   #drawer
   class="sidenav"
   fixedInViewport="true"
@@ -28,3 +28,7 @@
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
+
+<div *ngIf="!isUserLoggedIn">
+  <app-login></app-login>
+</div>
