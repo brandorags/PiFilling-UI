@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Breakpoints, BreakpointState, BreakpointObserver } from '@angular/cdk/layout';
+import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 
 import { map } from 'rxjs/operators';
 
 import { FileService } from './file.service';
+
+import { FileMetadata } from '../models/file/file-metadata';
 
 @Component({
   selector: 'app-file',
@@ -11,6 +13,9 @@ import { FileService } from './file.service';
   styleUrls: ['./file.component.scss']
 })
 export class FileComponent implements OnInit {
+
+  files: FileMetadata[] = [];
+
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(({ matches }) => {
@@ -52,6 +57,7 @@ export class FileComponent implements OnInit {
 
     this.fileService.upload(formData).subscribe(
       response => {
+        files = response;
         console.log(response);
       },
       error => {

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Constants } from '../common/constants';
+import { FileMetadata } from '../models/file/file-metadata';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,8 @@ export class FileService {
 
   constructor(private http: HttpClient) { }
 
-  upload(formData: FormData): Observable<any> {
-    return this.http.post<any>(Constants.apiBaseUrl + 'api/file', formData, Constants.httpOptionsAuth);
+  upload(formData: FormData): Observable<FileMetadata[]> {
+    return this.http.post<FileMetadata[]>(Constants.apiBaseUrl + 'api/file/upload', formData, Constants.httpOptionsAuth);
   }
 
 }
