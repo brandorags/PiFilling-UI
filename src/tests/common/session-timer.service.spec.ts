@@ -4,7 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { SimpleTimer } from 'ng2-simple-timer';
 
-import { SessionTimerService } from '../../common/session-timer.service';
+import { SessionTimerService } from '../../app/common/session-timer.service';
 
 describe('SessionTimerService', () => {
   let timer: SimpleTimer;
