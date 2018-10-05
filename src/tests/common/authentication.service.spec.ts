@@ -1,10 +1,10 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { AuthenticationService } from '../../common/authentication.service';
+import { AuthenticationService } from '../../app/common/authentication.service';
 
-import { User } from '../../models/login/user';
-import { Constants } from '../../common/constants';
+import { User } from '../../app/models/login/user';
+import { Constants } from '../../app/common/constants';
 
 describe('AuthenticationService', () => {
   let mockHttp: HttpTestingController;

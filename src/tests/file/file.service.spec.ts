@@ -1,9 +1,9 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { FileService } from '../../file/file.service';
+import { FileService } from '../../app/file/file.service';
 
-import { Constants } from '../../common/constants';
+import { Constants } from '../../app/common/constants';
 
 describe('FileService', () => {
   let mockHttp: HttpTestingController;
