@@ -1,4 +1,7 @@
-<input type="file" multiple (change)="upload($event.target.files)">
+<input type="file" multiple (change)="queueUpload($event.target.files)">
+<div *ngFor="let queuedFile of queuedFiles">
+  {{queuedFile.filename}}: {{queuedFile.uploadProgress}}%
+</div>
 
 <div class="grid-container">
   <h1 class="mat-h1">Dashboard</h1>
