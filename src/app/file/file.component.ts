@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpEventType } from '@angular/common/http';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 
 import { map } from 'rxjs/operators';
@@ -6,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { FileService } from './file.service';
 
 import { FileMetadata } from '../models/file/file-metadata';
+import { QueuedFile } from '../models/file/queued-file';
 
 @Component({
   selector: 'app-file',
@@ -14,7 +16,10 @@ import { FileMetadata } from '../models/file/file-metadata';
 })
 export class FileComponent implements OnInit {
 
+  progress: number;
+  message: string;
   files: FileMetadata[] = [];
+  queuedFiles: QueuedFile[] = [];
 
   /** Based on the screen size, switch from standard to one column per row */
   cards = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
@@ -45,20 +50,28 @@ export class FileComponent implements OnInit {
   ngOnInit() {
   }
 
-  upload(files: any): void {
-    if (files.length === 0) {
-      return;
-    }
-
-    let formData = new FormData();
+  queueUpload(files: any): void {
     for (let file of files) {
+      let formData = new FormData();
       formData.append(file.name, file, file.name);
+      this.uploadFile(file.name, formData);
     }
+  }
+
+  private uploadFile(filename: string, formData: FormData): void {
+    let queuedFile = new QueuedFile(filename, 0);
+    this.queuedFiles.push(queuedFile);
 
     this.fileService.upload(formData).subscribe(
-      response => {
-        files = response;
-        console.log(response);
+      event => {
+        if (event.type === HttpEventType.UploadProgress) {
+          queuedFile.uploadProgress = Math.round(100 * event.loaded / event.total);
+        } else if (event.type === HttpEventType.Response) {
+          for (let item of event.body) {
+            let fileMetadata: FileMetadata = item;
+            this.files.push(fileMetadata);
+          }
+        }
       },
       error => {
         console.log(error);
