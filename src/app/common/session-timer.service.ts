@@ -11,6 +11,8 @@ import { Constants } from './constants';
 })
 export class SessionTimerService {
 
+  readonly sessionTimerId = 'sessionTimer';
+
   constructor(
     private timer: SimpleTimer,
     private router: Router,
@@ -18,18 +20,18 @@ export class SessionTimerService {
   ) { }
 
   startTimer(): void {
-    let sessionTimerId = 'sessionTimer';
     let interval = 5;
     let counter = 0;
 
-    this.timer.newTimer(sessionTimerId, interval);
-    this.timer.subscribe(sessionTimerId, () => {
+    this.timer.newTimer(this.sessionTimerId, interval);
+    this.timer.subscribe(this.sessionTimerId, () => {
       counter += interval;
 
       if (counter >= Constants.lengthOfSession) {
         this.stopTimer();
         this.authService.logout().subscribe(
           success => {
+            console.log('You have been logged out due to inactivity.');
             this.router.navigate(['/login']);
           },
           error => {
@@ -43,6 +45,7 @@ export class SessionTimerService {
   stopTimer(): void {
     let subscriptions = this.timer.getSubscription();
     this.timer.unsubscribe(subscriptions[0]);
+    this.timer.delTimer(this.sessionTimerId);
   }
 
   restartTimer(): void {

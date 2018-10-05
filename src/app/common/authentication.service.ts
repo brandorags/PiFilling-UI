@@ -21,9 +21,7 @@ export class AuthenticationService {
     return this.http.post<User>(Constants.apiBaseUrl + 'api/login', user, Constants.httpOptionsAuth)
       .pipe(map(
         loggedInUser => {
-          // set a local cookie that lets Angular know a user is logged in
-          document.cookie = Constants.userCookieKey + '=loggedIn';
-
+          this.createLoggedInCookie();
           this.setLoggedInStatus(true);
 
           return loggedInUser;
@@ -38,11 +36,8 @@ export class AuthenticationService {
     return this.http.post<any>(Constants.apiBaseUrl + 'api/logout', JSON.stringify(''), Constants.httpOptionsAuth)
       .pipe(map(
         response => {
-          // delete the local cookie that will tell Angular the user has logged out
-          document.cookie = Constants.userCookieKey + '=; Max-Age=0';
-
+          this.deleteLoggedInCookie();
           this.setLoggedInStatus(false);
-
           localStorage.clear();
 
           return response;
@@ -55,6 +50,14 @@ export class AuthenticationService {
 
   setLoggedInStatus(isUserLoggedIn: boolean): void {
     this.isUserLoggedInSource.next(isUserLoggedIn);
+  }
+
+  private createLoggedInCookie(): void {
+    document.cookie = Constants.userCookieKey + '=loggedIn';
+  }
+
+  private deleteLoggedInCookie(): void {
+    document.cookie = Constants.userCookieKey + '=; Max-Age=0';
   }
 
 }
