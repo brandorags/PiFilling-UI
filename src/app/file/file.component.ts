@@ -48,6 +48,18 @@ export class FileComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.getFiles();
+  }
+
+  getFiles(): void {
+    this.fileService.getFilesForPath('brando').subscribe(
+      files => {
+        this.files = files;
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   queueUpload(files: any): void {
@@ -64,13 +76,13 @@ export class FileComponent implements OnInit {
 
     this.fileService.upload(formData).subscribe(
       event => {
-        if (event.type === HttpEventType.UploadProgress) {
-          queuedFile.uploadProgress = Math.round(100 * event.loaded / event.total);
-        } else if (event.type === HttpEventType.Response) {
-          for (let item of event.body) {
-            let fileMetadata: FileMetadata = item;
+        switch (event.type) {
+          case HttpEventType.UploadProgress:
+            queuedFile.uploadProgress = Math.round(100 * event.loaded / event.total);
+            break;
+          case HttpEventType.Response:
+            let fileMetadata: FileMetadata = event.body[0];
             this.files.push(fileMetadata);
-          }
         }
       },
       error => {
