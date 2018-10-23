@@ -9,6 +9,10 @@ body {
   font-family: 'Roboto', sans-serif; 
 }
 
+.mat-toolbar {
+  z-index: 1000;
+}
+
 .center {
   display: flex;
   flex-direction: column;
