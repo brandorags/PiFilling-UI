@@ -35,6 +35,7 @@ export class FileComponent implements OnInit {
 
   ngOnInit() {
     this.getFiles();
+    this.initFileDrop();
   }
 
   getFiles(): void {
@@ -48,7 +49,8 @@ export class FileComponent implements OnInit {
     );
   }
 
-  queueUpload(files: any): void {
+  queueUpload(event: any): void {
+    let files = event.dataTransfer.files;
     for (let file of files) {
       let formData = new FormData();
       formData.append(file.name, file, file.name);
@@ -75,6 +77,33 @@ export class FileComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  private initFileDrop(): void {
+    let dropArea = document.getElementsByClassName('file-card-container')[0];
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, showActiveFileDrop, false);
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, hideActiveFileDrop, false);
+    });
+
+    function preventDefaults(event: any): void {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    function showActiveFileDrop(): void {
+      dropArea.classList.add('file-drop-active');
+    }
+
+    function hideActiveFileDrop(): void {
+      dropArea.classList.remove('file-drop-active');
+    }
   }
 
 }
