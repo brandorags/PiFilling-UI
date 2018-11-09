@@ -10,10 +10,11 @@ import { MatButtonModule,
   MatGridListModule,
   MatCardModule,
   MatMenuModule,
+  MatProgressBarModule,
+  MatDividerModule,
   MatSnackBarModule,
   MAT_SNACK_BAR_DEFAULT_OPTIONS
 } from '@angular/material';
-
 
 @NgModule({
   imports: [
@@ -28,6 +29,8 @@ import { MatButtonModule,
     MatGridListModule,
     MatCardModule,
     MatMenuModule,
+    MatProgressBarModule,
+    MatDividerModule,
     MatSnackBarModule
   ],
   exports: [
@@ -42,6 +45,8 @@ import { MatButtonModule,
     MatGridListModule,
     MatCardModule,
     MatMenuModule,
+    MatProgressBarModule,
+    MatDividerModule,
     MatSnackBarModule
   ],
   providers: [

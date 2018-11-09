@@ -15,3 +15,12 @@
 .file-drop-active {
   background-color: rgba(63, 81, 181, 0.4);
 }
+
+.progress-bar-container {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  border: 0.5px solid gray;
+  max-height: 300px;
+  overflow-y: auto;
+}
