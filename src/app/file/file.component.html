@@ -1,8 +1,3 @@
-<input type="file" multiple (change)="queueUpload($event.target.files)">
-<div *ngFor="let queuedFile of queuedFiles">
-  {{queuedFile.filename}}: {{queuedFile.uploadProgress}}%
-</div>
-
 <div class="file-card-container" (drop)="queueUpload($event)">
   <mat-grid-list cols="{{(isHandset$ | async) ? 1 : 3}}" rowHeight="375px">
     <mat-grid-tile *ngFor="let file of files">
@@ -16,27 +11,29 @@
   </mat-grid-list>
 </div>
 
-<!-- <div class="grid-container">
-  <h1 class="mat-h1">Dashboard</h1>
-  <mat-grid-list cols="2" rowHeight="350px">
-    <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">
-      <mat-card class="dashboard-card">
-        <mat-card-header>
-          <mat-card-title>
-            {{card.title}}
-            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu" xPosition="before">
-              <button mat-menu-item>Expand</button>
-              <button mat-menu-item>Remove</button>
-            </mat-menu>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content class="dashboard-card-content">
-          <div>Card Content Here</div>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
-</div> -->
+<!-- <mat-card *ngIf="queuedFiles.length > 0" class="progress-bar-container">
+  <mat-card-header>
+    <mat-card-title>Uploads</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-card *ngFor="let queuedFile of queuedFiles">
+      <mat-card-content>
+        {{queuedFile.filename}}
+        <mat-progress-bar [value]="queuedFile.uploadProgress"></mat-progress-bar>
+      </mat-card-content>
+    </mat-card>
+  </mat-card-content>
+</mat-card> -->
+
+<div *ngIf="queuedFiles.length > 0" class="progress-bar-container">
+  Uploads
+  <mat-divider></mat-divider>
+  <div class="queued-file-list">
+    <mat-card *ngFor="let queuedFile of queuedFiles">
+      <mat-card-content>
+        {{queuedFile.filename}}
+        <mat-progress-bar [value]="queuedFile.uploadProgress"></mat-progress-bar>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
