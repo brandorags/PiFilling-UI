@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiBaseUrl: 'http://localhost:5000/',
+  fileStorageBaseUrl: 'http://127.0.0.1:8887/',
   lengthOfSession: 900
 };
 
