@@ -9,6 +9,7 @@ import { FileService } from './file.service';
 
 import { FileMetadata } from '../models/file/file-metadata';
 import { QueuedFile } from '../models/file/queued-file';
+import { Constants } from '../common/constants';
 
 @Component({
   selector: 'app-file',
@@ -20,6 +21,7 @@ export class FileComponent implements OnInit {
   files: FileMetadata[] = [];
   queuedFiles: QueuedFile[] = [];
 
+  fileStorageBaseUrl = Constants.fileStorageBaseUrl;
   progress: number;
   message: string;
 
