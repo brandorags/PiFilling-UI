@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { AuthenticationService } from './common/authentication.service';
+import { FileService } from './file/file.service';
+
 import { Constants } from './common/constants';
 
 @Component({
@@ -24,7 +26,8 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private breakpointObserver: BreakpointObserver,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private fileService: FileService
   ) { }
 
   ngOnInit() {
@@ -39,8 +42,12 @@ export class AppComponent implements OnInit {
     }
   }
 
-  logoutUser(e: any): void {
-    e.preventDefault();
+  queueUpload(fileList: FileList): void {
+    this.fileService.fileListEventEmitter.emit(fileList);
+  }
+
+  logoutUser(event: any): void {
+    event.preventDefault();
 
     this.authService.logout().subscribe(
       success => {
