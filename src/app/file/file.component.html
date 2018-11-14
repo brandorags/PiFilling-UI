@@ -1,4 +1,4 @@
-<div class="file-card-container" (drop)="queueUpload($event)">
+<div class="file-card-container" (drop)="queueUpload($event.dataTransfer.files)">
   <mat-grid-list cols="{{(isHandset$ | async) ? 1 : 3}}" rowHeight="375px">
     <mat-grid-tile *ngFor="let file of files">
       <mat-card class="file-card" tabindex="0">
