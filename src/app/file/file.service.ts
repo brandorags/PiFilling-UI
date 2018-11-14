@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient, HttpRequest, HttpParams } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
@@ -10,6 +10,8 @@ import { FileMetadata } from '../models/file/file-metadata';
   providedIn: 'root'
 })
 export class FileService {
+
+  fileListEventEmitter: EventEmitter<FileList> = new EventEmitter();
 
   constructor(private http: HttpClient) { }
 

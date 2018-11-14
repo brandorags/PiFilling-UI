@@ -33,7 +33,11 @@ export class FileComponent implements OnInit {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private fileService: FileService
-  ) { }
+  ) {
+    this.fileService.fileListEventEmitter.subscribe(fileList => {
+      this.queueUpload(fileList);
+    });
+  }
 
   ngOnInit() {
     this.getFiles();
@@ -51,11 +55,13 @@ export class FileComponent implements OnInit {
     );
   }
 
-  queueUpload(event: any): void {
-    let files = event.dataTransfer.files;
-    for (let file of files) {
+  queueUpload(fileList: FileList): void {
+    for (let i = 0; i < fileList.length; i++) {
+      let file = fileList[i];
+
       let formData = new FormData();
       formData.append(file.name, file, file.name);
+
       this.uploadFile(file.name, formData);
     }
   }
