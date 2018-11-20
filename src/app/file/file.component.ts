@@ -55,6 +55,10 @@ export class FileComponent implements OnInit {
     );
   }
 
+  clearQueuedFiles(): void {
+    this.queuedFiles = [];
+  }
+
   queueUpload(fileList: FileList): void {
     for (let i = 0; i < fileList.length; i++) {
       let file = fileList[i];
