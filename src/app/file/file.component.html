@@ -11,7 +11,7 @@
   </mat-grid-list>
 </div>
 
-<div *ngIf="queuedFiles.length > 0" class="progress-bar-container">
+<!-- <div *ngIf="queuedFiles.length > 0" class="progress-bar-container">
   Uploads
   <mat-divider></mat-divider>
   <div class="queued-file-list">
@@ -22,4 +22,77 @@
       </mat-card-content>
     </mat-card>
   </div>
+</div> -->
+
+<div class="queued-file-list-header">
+  <span class="queued-file-list-header-title">Uploads</span>
+  <mat-icon class="queued-file-list-header-close">close</mat-icon>
+</div>
+<div class="queued-file-list-body">
+  <mat-card>
+    <mat-card-content>
+      File.jpg
+      <mat-progress-bar [value]="100"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+  <!-- <mat-card>
+    <mat-card-content>
+      File.jpg
+      <mat-progress-bar [value]="100"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      File.jpg
+      <mat-progress-bar [value]="100"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      File.jpg
+      <mat-progress-bar [value]="100"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      File.jpg
+      <mat-progress-bar [value]="100"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      File.jpg
+      <mat-progress-bar [value]="100"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      File.jpg
+      <mat-progress-bar [value]="100"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      File.jpg
+      <mat-progress-bar [value]="100"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      File.jpg
+      <mat-progress-bar [value]="100"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      File.jpg
+      <mat-progress-bar [value]="100"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      File.jpg
+      <mat-progress-bar [value]="100"></mat-progress-bar>
+    </mat-card-content>
+  </mat-card> -->
 </div>
