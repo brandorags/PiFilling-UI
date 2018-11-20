@@ -18,10 +18,10 @@
 
 .queued-file-list-header {
   position: fixed;
-  bottom: 111px;
+  bottom: 70px;
   right: 15px;
   height: 40px;
-  min-width: 300px;
+  width: 300px;
   color: white;
   background-color: rgb(63, 81, 181);
   border: 1px solid rgba(0, 0, 0, .2);
@@ -39,10 +39,10 @@
 
 .queued-file-list-body {
   position: fixed;
-  bottom: 10px;
+  bottom: 15px;
   right: 15px;
-  max-height: 100px;
-  min-width: 300px;
+  max-height: 54px;
+  width: 300px;
   overflow-y: auto;
   border-bottom: 1px solid rgba(0, 0, 0, .2);
   border-right: 1px solid rgba(0, 0, 0, .2);
