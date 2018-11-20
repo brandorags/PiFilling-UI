@@ -20,10 +20,9 @@ export class FileComponent implements OnInit {
 
   files: FileMetadata[] = [];
   queuedFiles: QueuedFile[] = [];
+  queuedFilesRemaining = 0;
 
   fileStorageBaseUrl = Constants.fileStorageBaseUrl;
-  progress: number;
-  message: string;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
   .pipe(
@@ -73,6 +72,7 @@ export class FileComponent implements OnInit {
   private uploadFile(filename: string, formData: FormData): void {
     let queuedFile = new QueuedFile(filename, 0);
     this.queuedFiles.push(queuedFile);
+    this.queuedFilesRemaining++;
 
     this.fileService.upload(formData).subscribe(
       event => {
@@ -83,6 +83,7 @@ export class FileComponent implements OnInit {
           case HttpEventType.Response:
             let fileMetadata: FileMetadata = event.body[0];
             this.files.push(fileMetadata);
+            this.queuedFilesRemaining--;
         }
       },
       error => {

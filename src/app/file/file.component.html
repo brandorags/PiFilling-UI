@@ -13,7 +13,12 @@
 
 <div *ngIf="queuedFiles.length > 0">
   <div class="queued-file-list-header">
-    <span class="queued-file-list-header-title">Uploads</span>
+    <span *ngIf="queuedFilesRemaining > 0; else uploadsComplete" class="queued-file-list-header-title">
+      Uploads ({{queuedFilesRemaining}} Remaining)
+    </span>
+    <ng-template #uploadsComplete>
+      <span class="queued-file-list-header-title">Uploads (Done!)</span>
+    </ng-template>
     <mat-icon class="queued-file-list-header-close" (click)="clearQueuedFiles()">close</mat-icon>
   </div>
   <div class="queued-file-list-body">
