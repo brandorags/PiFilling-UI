@@ -18,7 +18,7 @@
 
 .queued-file-list-header {
   position: fixed;
-  bottom: 70px;
+  bottom: 69px;
   right: 15px;
   height: 40px;
   width: 300px;
@@ -29,10 +29,12 @@
 
 .queued-file-list-header-title {
   padding-left: 10px;
+  line-height: 2.3;
 }
 
 .queued-file-list-header-close {
   padding-right: 10px;
+  line-height: 1.48;
   float: right;
   cursor: pointer;
 }
