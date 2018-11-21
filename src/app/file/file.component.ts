@@ -20,6 +20,7 @@ export class FileComponent implements OnInit {
 
   files: FileMetadata[] = [];
   queuedFiles: QueuedFile[] = [];
+  filePath: string;
   queuedFilesRemaining = 0;
 
   fileStorageBaseUrl = Constants.fileStorageBaseUrl;
@@ -46,7 +47,10 @@ export class FileComponent implements OnInit {
   getFiles(): void {
     this.fileService.getFilesForPath('brando').subscribe(
       files => {
-        this.files = files;
+        if (files) {
+          this.files = files;
+          this.filePath = files[0].path;
+        }
       },
       error => {
         console.log(error);
