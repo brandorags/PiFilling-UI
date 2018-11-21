@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatDialog } from '@angular/material';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,6 +10,7 @@ import { AuthenticationService } from './common/authentication.service';
 import { FileService } from './file/file.service';
 
 import { Constants } from './common/constants';
+import { NewFolderDialogComponent } from './file/new-folder-dialog/new-folder-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +28,7 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private breakpointObserver: BreakpointObserver,
+    private dialog: MatDialog,
     private authService: AuthenticationService,
     private fileService: FileService
   ) { }
@@ -44,6 +47,16 @@ export class AppComponent implements OnInit {
 
   queueUpload(fileList: FileList): void {
     this.fileService.fileListEventEmitter.emit(fileList);
+  }
+
+  openNewFolderDialog(): void {
+    const newFolderDialog = this.dialog.open(NewFolderDialogComponent, {
+      width: '350px',
+      data: { folderName: '' }
+    });
+    newFolderDialog.afterClosed().subscribe(folderName => {
+      console.log(folderName);
+    });
   }
 
   logoutUser(event: any): void {

@@ -9,8 +9,11 @@
     <mat-toolbar color="primary">Menu</mat-toolbar>
     <mat-nav-list>
       <a mat-list-item>
-        <input type="file" multiple class="upload-link" (change)="queueUpload($event.target.files)">
+        <input type="file" multiple (change)="queueUpload($event.target.files)">
         <mat-icon>cloud_upload</mat-icon>&nbsp;Upload
+      </a>
+      <a mat-list-item (click)="openNewFolderDialog()">
+        <mat-icon>create_new_folder</mat-icon>&nbsp;New Folder
       </a>
       <mat-divider></mat-divider>
       <a mat-list-item (click)="logoutUser($event)">
