@@ -44,6 +44,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { FileComponent } from './file/file.component';
+import { NewFolderDialogComponent } from './file/new-folder-dialog/new-folder-dialog.component';
 
 
 @NgModule({
@@ -51,7 +52,11 @@ import { FileComponent } from './file/file.component';
     AppComponent,
     LoginComponent,
     NotFoundComponent,
-    FileComponent
+    FileComponent,
+    NewFolderDialogComponent
+  ],
+  entryComponents: [
+    NewFolderDialogComponent
   ],
   imports: [
     BrowserModule,
