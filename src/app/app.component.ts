@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators';
 
 import { AuthenticationService } from './common/authentication.service';
 import { FileService } from './file/file.service';
+import { SessionTimerService } from './common/session-timer.service';
 
 import { Constants } from './common/constants';
 import { NewFolderDialogComponent } from './file/new-folder-dialog/new-folder-dialog.component';
@@ -30,7 +31,8 @@ export class AppComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private dialog: MatDialog,
     private authService: AuthenticationService,
-    private fileService: FileService
+    private fileService: FileService,
+    private sessionTimerService: SessionTimerService
   ) { }
 
   ngOnInit() {
@@ -64,6 +66,7 @@ export class AppComponent implements OnInit {
 
     this.authService.logout().subscribe(
       success => {
+        this.sessionTimerService.stopTimer();
         this.router.navigate(['/login']);
         console.log(success.message);
       },
