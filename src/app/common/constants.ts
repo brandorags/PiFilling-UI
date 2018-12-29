@@ -5,6 +5,7 @@ export class Constants {
   static readonly fileStorageBaseUrl = environment.fileStorageBaseUrl;
   static readonly lengthOfSession = environment.lengthOfSession;
   static readonly userCookieKey = 'currentUser';
+  static readonly usernameLocalStorageKey = 'username';
   static readonly httpOptionsAuth = {
     withCredentials: true
   };
