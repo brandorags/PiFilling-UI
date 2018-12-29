@@ -21,7 +21,7 @@ export class AuthenticationService {
     return this.http.post<User>(Constants.apiBaseUrl + 'api/login', user, Constants.httpOptionsAuth)
       .pipe(map(
         loggedInUser => {
-          this.createLoggedInCookie();
+          this.createUserDataCache(loggedInUser);
           this.setLoggedInStatus(true);
 
           return loggedInUser;
@@ -36,7 +36,7 @@ export class AuthenticationService {
     return this.http.post<any>(Constants.apiBaseUrl + 'api/logout', JSON.stringify(''), Constants.httpOptionsAuth)
       .pipe(map(
         response => {
-          this.deleteLoggedInCookie();
+          this.deleteUserDataCache();
           this.setLoggedInStatus(false);
           localStorage.clear();
 
@@ -52,12 +52,14 @@ export class AuthenticationService {
     this.isUserLoggedInSource.next(isUserLoggedIn);
   }
 
-  private createLoggedInCookie(): void {
+  private createUserDataCache(user: User): void {
     document.cookie = Constants.userCookieKey + '=loggedIn';
+    localStorage.setItem(Constants.usernameLocalStorageKey, user.username);
   }
 
-  private deleteLoggedInCookie(): void {
+  private deleteUserDataCache(): void {
     document.cookie = Constants.userCookieKey + '=; Max-Age=0';
+    localStorage.removeItem(Constants.usernameLocalStorageKey);
   }
 
 }

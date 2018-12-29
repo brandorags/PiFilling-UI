@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpEventType } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 
 import { Observable } from 'rxjs';
@@ -7,9 +8,10 @@ import { map } from 'rxjs/operators';
 
 import { FileService } from './file.service';
 
+import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
 import { QueuedFile } from '../models/file/queued-file';
-import { Constants } from '../common/constants';
+import { Folder } from '../models/file/folder';
 
 @Component({
   selector: 'app-file',
@@ -20,8 +22,8 @@ export class FileComponent implements OnInit {
 
   files: FileMetadata[] = [];
   queuedFiles: QueuedFile[] = [];
-  filePath: string;
   queuedFilesRemaining = 0;
+  folderPath: string;
 
   fileStorageBaseUrl = Constants.fileStorageBaseUrl;
 
@@ -32,24 +34,33 @@ export class FileComponent implements OnInit {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
+    private snackBar: MatSnackBar,
     private fileService: FileService
   ) {
     this.fileService.fileListEventEmitter.subscribe(fileList => {
       this.queueUpload(fileList);
     });
+    this.fileService.newFolderEventEmitter.subscribe(folderName => {
+      let newFolder = new Folder();
+      newFolder.name = folderName;
+      newFolder.path = this.folderPath;
+
+      this.createNewFolder(newFolder);
+    });
   }
 
   ngOnInit() {
-    this.getFiles();
+    this.folderPath = localStorage.getItem(Constants.usernameLocalStorageKey);
+
+    this.getFiles(this.folderPath);
     this.initFileDrop();
   }
 
-  getFiles(): void {
-    this.fileService.getFilesForPath('brando').subscribe(
+  getFiles(path: string): void {
+    this.fileService.getFilesForPath(path).subscribe(
       files => {
-        if (files) {
+        if (files.length > 0) {
           this.files = files;
-          this.filePath = files[0].path;
         }
       },
       error => {
@@ -89,6 +100,18 @@ export class FileComponent implements OnInit {
             this.files.push(fileMetadata);
             this.queuedFilesRemaining--;
         }
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
+
+  private createNewFolder(newFolder: Folder) {
+    this.fileService.createNewFolder(newFolder).subscribe(
+      createdFolder => {
+        this.snackBar.open(`${createdFolder.name} has been created.`);
+        this.getFiles(this.folderPath);
       },
       error => {
         console.log(error);
