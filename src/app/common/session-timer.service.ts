@@ -56,8 +56,6 @@ export class SessionTimerService {
   refreshTimer(): void {
     if (this.isTimerRunning()) {
       this.restartTimer();
-    } else {
-      this.startTimer();
     }
   }
 
