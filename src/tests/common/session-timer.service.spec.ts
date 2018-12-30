@@ -28,7 +28,7 @@ describe('SessionTimerService', () => {
     expect(service).toBeTruthy();
   }));
 
-  it('should start timer', inject([SessionTimerService], (service: SessionTimerService) => {
+  it('should start the timer', inject([SessionTimerService], (service: SessionTimerService) => {
     let timerIds = timer.getTimer();
     let subscriptionIds = timer.getSubscription();
 
@@ -50,7 +50,7 @@ describe('SessionTimerService', () => {
     expect(subscriptionId).toContain(service.sessionTimerId);
   }));
 
-  it('should stop timer', inject([SessionTimerService], (service: SessionTimerService) => {
+  it('should stop the timer', inject([SessionTimerService], (service: SessionTimerService) => {
     service.startTimer();
 
     let timerIds = timer.getTimer();
@@ -77,6 +77,21 @@ describe('SessionTimerService', () => {
   it('should have a stopped timer', inject([SessionTimerService], (service: SessionTimerService) => {
     service.startTimer();
     service.stopTimer();
+
+    expect(service.isTimerRunning()).toBeFalsy();
+  }));
+
+  it('should have a running timer after being refreshed', inject([SessionTimerService],
+    (service: SessionTimerService) => {
+    service.startTimer();
+    service.refreshTimer();
+
+    expect(service.isTimerRunning()).toBeTruthy();
+  }));
+
+  it('should not have a running timer after being refreshed', inject([SessionTimerService],
+    (service: SessionTimerService) => {
+    service.refreshTimer();
 
     expect(service.isTimerRunning()).toBeFalsy();
   }));
