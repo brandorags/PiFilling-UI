@@ -48,14 +48,10 @@ export class SessionTimerService {
     this.timer.delTimer(this.sessionTimerId);
   }
 
-  restartTimer(): void {
-    this.stopTimer();
-    this.startTimer();
-  }
-
   refreshTimer(): void {
     if (this.isTimerRunning()) {
-      this.restartTimer();
+      this.stopTimer();
+      this.startTimer();
     }
   }
 
