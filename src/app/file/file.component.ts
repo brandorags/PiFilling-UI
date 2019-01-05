@@ -40,6 +40,7 @@ export class FileComponent implements OnInit {
     this.fileService.fileListEventEmitter.subscribe(fileList => {
       this.queueUpload(fileList);
     });
+
     this.fileService.newFolderEventEmitter.subscribe(folderName => {
       let newFolder = new Folder();
       newFolder.name = folderName;
@@ -56,12 +57,20 @@ export class FileComponent implements OnInit {
     this.initFileDrop();
   }
 
+  navigateToFolder(folderName: string): void {
+    if (this.folderPath.includes('/')) {
+      this.folderPath = this.folderPath.replace(/([^/]+$)/, folderName);
+    } else {
+      this.folderPath += `/${folderName}`;
+    }
+
+    this.getFiles(this.folderPath);
+  }
+
   getFiles(path: string): void {
     this.fileService.getFilesForPath(path).subscribe(
       files => {
-        if (files.length > 0) {
-          this.files = files;
-        }
+        this.files = files;
       },
       error => {
         console.log(error);
@@ -80,23 +89,23 @@ export class FileComponent implements OnInit {
       let formData = new FormData();
       formData.append(file.name, file, file.name);
 
-      this.uploadFile(file.name, formData);
+      this.uploadFile(file.name, formData, this.folderPath);
     }
   }
 
-  private uploadFile(filename: string, formData: FormData): void {
+  private uploadFile(filename: string, formData: FormData, folderPath: string): void {
     let queuedFile = new QueuedFile(filename, 0);
     this.queuedFiles.push(queuedFile);
     this.queuedFilesRemaining++;
 
-    this.fileService.upload(formData).subscribe(
+    this.fileService.uploadFile(formData, folderPath).subscribe(
       event => {
         switch (event.type) {
           case HttpEventType.UploadProgress:
             queuedFile.uploadProgress = Math.round(100 * event.loaded / event.total);
             break;
           case HttpEventType.Response:
-            let fileMetadata: FileMetadata = event.body[0];
+            let fileMetadata: FileMetadata = event.body;
             this.files.push(fileMetadata);
             this.queuedFilesRemaining--;
         }
