@@ -1,7 +1,7 @@
-<div *ngIf="files.length > 0">
-  <div *ngIf="folderPath.includes('/')" class="folder-path">
-    Main Folder
-  </div>
+<div class="folder-path">
+  <span *ngFor="let folder of folderPath.pathArray">
+      {{folder}} <mat-icon>keyboard_arrow_right</mat-icon>
+  </span>
 </div>
 
 <div class="file-card-container" (drop)="queueUpload($event.dataTransfer.files)">
@@ -14,7 +14,7 @@
         </mat-card-content>
       </mat-card>
       <ng-template #directoryCard>
-        <mat-card class="file-card" (dblclick)="navigateToFolder(file.filename)" tabindex="0">
+        <mat-card class="file-card" (dblclick)="navigateToSubfolder(file.filename)" tabindex="0">
           <img mat-card-image src="{{fileStorageBaseUrl}}{{folderPath}}/{{file.filename}}" alt="{{file.filename}}">
           <mat-card-content>
             {{file.filename}}
