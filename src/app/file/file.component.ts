@@ -12,6 +12,7 @@ import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
 import { QueuedFile } from '../models/file/queued-file';
 import { Folder } from '../models/file/folder';
+import { FolderPath } from '../models/file/folder-path';
 
 @Component({
   selector: 'app-file',
@@ -23,7 +24,7 @@ export class FileComponent implements OnInit {
   files: FileMetadata[] = [];
   queuedFiles: QueuedFile[] = [];
   queuedFilesRemaining = 0;
-  folderPath: string;
+  folderPath: FolderPath = new FolderPath();
 
   fileStorageBaseUrl = Constants.fileStorageBaseUrl;
 
@@ -44,27 +45,22 @@ export class FileComponent implements OnInit {
     this.fileService.newFolderEventEmitter.subscribe(folderName => {
       let newFolder = new Folder();
       newFolder.name = folderName;
-      newFolder.path = this.folderPath;
+      newFolder.path = this.folderPath.toString();
 
       this.createNewFolder(newFolder);
     });
   }
 
   ngOnInit() {
-    this.folderPath = localStorage.getItem(Constants.usernameLocalStorageKey);
+    this.folderPath.pathArray.push(localStorage.getItem(Constants.usernameLocalStorageKey));
 
-    this.getFiles(this.folderPath);
+    this.getFiles(this.folderPath.toString());
     this.initFileDrop();
   }
 
-  navigateToFolder(folderName: string): void {
-    if (this.folderPath.includes('/')) {
-      this.folderPath = this.folderPath.replace(/([^/]+$)/, folderName);
-    } else {
-      this.folderPath += `/${folderName}`;
-    }
-
-    this.getFiles(this.folderPath);
+  navigateToSubfolder(folderName: string): void {
+    this.folderPath.pathArray.push(folderName);
+    this.getFiles(this.folderPath.toString());
   }
 
   getFiles(path: string): void {
@@ -89,7 +85,7 @@ export class FileComponent implements OnInit {
       let formData = new FormData();
       formData.append(file.name, file, file.name);
 
-      this.uploadFile(file.name, formData, this.folderPath);
+      this.uploadFile(file.name, formData, this.folderPath.toString());
     }
   }
 
@@ -120,7 +116,7 @@ export class FileComponent implements OnInit {
     this.fileService.createNewFolder(newFolder).subscribe(
       createdFolder => {
         this.snackBar.open(`${createdFolder.name} has been created.`);
-        this.getFiles(this.folderPath);
+        this.getFiles(this.folderPath.toString());
       },
       error => {
         console.log(error);
