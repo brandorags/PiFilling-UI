@@ -1,6 +1,19 @@
 <div class="folder-path">
-  <span *ngFor="let folder of folderPath.pathArray">
-      {{folder}} <mat-icon>keyboard_arrow_right</mat-icon>
+  <span *ngFor="let folder of folderPath.pathArray; first as isFirst; last as isLast">
+      <span *ngIf="isFirst && folderPath.pathArray.length === 1; else multipleFolderLogic">
+        <mat-icon>home</mat-icon> {{folder}}
+      </span>
+      <ng-template #multipleFolderLogic>
+        <span *ngIf="isFirst">
+          <mat-icon>home</mat-icon> {{folder}} <mat-icon>keyboard_arrow_right</mat-icon>
+        </span>
+        <span *ngIf="!isFirst && !isLast">
+          {{folder}} <mat-icon>keyboard_arrow_right</mat-icon>
+        </span>
+        <span *ngIf="isLast">
+          {{folder}}
+        </span>
+      </ng-template>
   </span>
 </div>
 
