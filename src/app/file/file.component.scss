@@ -12,6 +12,10 @@
     width: 200px;
     object-fit: contain;
   }
+
+  mat-icon {
+    font-size: 50px;
+  }
 }
 
 .file-drop-active {
@@ -55,7 +59,7 @@
 
 .folder-path {
   text-align: left;
-  font-size: 1.3em;
+  // font-size: 1.3em;
   margin-top: 0.9em;
   margin-left: 0.7em;
 }
