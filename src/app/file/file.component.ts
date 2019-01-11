@@ -58,6 +58,11 @@ export class FileComponent implements OnInit {
     this.initFileDrop();
   }
 
+  navigateToFolder(folderIndex: number): void {
+    this.folderPath.pathArray.length = folderIndex + 1;
+    this.getFiles(this.folderPath.toString());
+  }
+
   navigateToSubfolder(folderName: string): void {
     this.folderPath.pathArray.push(folderName);
     this.getFiles(this.folderPath.toString());
