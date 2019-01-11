@@ -12,6 +12,7 @@ import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
 import { QueuedFile } from '../models/file/queued-file';
 import { Folder } from '../models/file/folder';
+import { FolderPath } from '../models/file/folder-path';
 
 @Component({
   selector: 'app-file',
@@ -23,7 +24,7 @@ export class FileComponent implements OnInit {
   files: FileMetadata[] = [];
   queuedFiles: QueuedFile[] = [];
   queuedFilesRemaining = 0;
-  folderPath: string;
+  folderPath: FolderPath = new FolderPath();
 
   fileStorageBaseUrl = Constants.fileStorageBaseUrl;
 
@@ -40,28 +41,37 @@ export class FileComponent implements OnInit {
     this.fileService.fileListEventEmitter.subscribe(fileList => {
       this.queueUpload(fileList);
     });
+
     this.fileService.newFolderEventEmitter.subscribe(folderName => {
       let newFolder = new Folder();
       newFolder.name = folderName;
-      newFolder.path = this.folderPath;
+      newFolder.path = this.folderPath.toString();
 
       this.createNewFolder(newFolder);
     });
   }
 
   ngOnInit() {
-    this.folderPath = localStorage.getItem(Constants.usernameLocalStorageKey);
+    this.folderPath.pathArray.push(localStorage.getItem(Constants.usernameLocalStorageKey));
 
-    this.getFiles(this.folderPath);
+    this.getFiles(this.folderPath.toString());
     this.initFileDrop();
+  }
+
+  navigateFromFolderPath(folderIndex: number): void {
+    this.folderPath.pathArray.length = folderIndex + 1;
+    this.getFiles(this.folderPath.toString());
+  }
+
+  navigateFromFolderCard(folderName: string): void {
+    this.folderPath.pathArray.push(folderName);
+    this.getFiles(this.folderPath.toString());
   }
 
   getFiles(path: string): void {
     this.fileService.getFilesForPath(path).subscribe(
       files => {
-        if (files.length > 0) {
-          this.files = files;
-        }
+        this.files = files;
       },
       error => {
         console.log(error);
@@ -80,23 +90,23 @@ export class FileComponent implements OnInit {
       let formData = new FormData();
       formData.append(file.name, file, file.name);
 
-      this.uploadFile(file.name, formData);
+      this.uploadFile(file.name, formData, this.folderPath.toString());
     }
   }
 
-  private uploadFile(filename: string, formData: FormData): void {
+  private uploadFile(filename: string, formData: FormData, folderPath: string): void {
     let queuedFile = new QueuedFile(filename, 0);
     this.queuedFiles.push(queuedFile);
     this.queuedFilesRemaining++;
 
-    this.fileService.upload(formData).subscribe(
+    this.fileService.uploadFile(formData, folderPath).subscribe(
       event => {
         switch (event.type) {
           case HttpEventType.UploadProgress:
             queuedFile.uploadProgress = Math.round(100 * event.loaded / event.total);
             break;
           case HttpEventType.Response:
-            let fileMetadata: FileMetadata = event.body[0];
+            let fileMetadata: FileMetadata = event.body;
             this.files.push(fileMetadata);
             this.queuedFilesRemaining--;
         }
@@ -111,7 +121,7 @@ export class FileComponent implements OnInit {
     this.fileService.createNewFolder(newFolder).subscribe(
       createdFolder => {
         this.snackBar.open(`${createdFolder.name} has been created.`);
-        this.getFiles(this.folderPath);
+        this.getFiles(this.folderPath.toString());
       },
       error => {
         console.log(error);

@@ -40,10 +40,11 @@ describe('FileService', () => {
 
   it('should upload the file', inject([FileService], (service: FileService) => {
     let file = new FormData();
+    let folderPath = 'test/path';
 
-    service.upload(file).subscribe();
+    service.uploadFile(file, folderPath).subscribe();
 
-    let mockRequest = mockHttp.expectOne(Constants.apiBaseUrl + 'api/file/upload');
+    let mockRequest = mockHttp.expectOne(Constants.apiBaseUrl + 'api/file/upload-file');
 
     expect(mockRequest.request.method).toEqual('POST');
     expect(mockRequest.request.withCredentials).toBeTruthy();

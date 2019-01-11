@@ -1,7 +1,8 @@
 import { Injectable, EventEmitter } from '@angular/core';
-import { HttpClient, HttpRequest, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpRequest, HttpParams, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
@@ -21,11 +22,15 @@ export class FileService {
     const params = new HttpParams()
       .set('path', path);
 
-    return this.http.get<FileMetadata[]>(Constants.apiBaseUrl + 'api/file/file-metadata', { params: params, withCredentials: true });
+    return this.http.get<FileMetadata[]>(Constants.apiBaseUrl + 'api/file/file-metadata', { params: params, withCredentials: true })
+      .pipe(map(res => res.map(fm => new FileMetadata(fm.filename, fm.fileSize,
+        fm.fileType, fm.modifiedDate, fm.isDirectory))));
   }
 
-  upload(formData: FormData): Observable<any> {
-    const uploadRequest = new HttpRequest('POST', Constants.apiBaseUrl + 'api/file/upload', formData, {
+  uploadFile(formData: FormData, folderPath: string): Observable<any> {
+    const headers = new HttpHeaders({'Current-Directory': folderPath});
+    const uploadRequest = new HttpRequest('POST', Constants.apiBaseUrl + 'api/file/upload-file', formData, {
+      headers: headers,
       withCredentials: true,
       reportProgress: true
     });
