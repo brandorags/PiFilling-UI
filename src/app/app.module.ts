@@ -25,6 +25,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 
 // third-party modules
 import { SimpleTimer } from 'ng2-simple-timer';
+import { ShContextMenuModule } from 'context-menu-angular6';
 
 // user-defined modules
 import { MaterialModule } from './material/material.module';
@@ -62,7 +63,8 @@ import { NewFolderDialogComponent } from './file/new-folder-dialog/new-folder-di
     BrowserAnimationsModule,
     LayoutModule,
     MaterialModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ShContextMenuModule
   ],
   providers: [
     AuthGuard,
