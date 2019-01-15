@@ -111,6 +111,14 @@ export class FileComponent implements OnInit {
     }
   }
 
+  renameFile(event: any): void {
+    console.log(event.data);
+  }
+
+  deleteFile(event: any): void {
+    console.log(event);
+  }
+
   private uploadFile(filename: string, formData: FormData, folderPath: string): void {
     let queuedFile = new QueuedFile(filename, 0);
     this.queuedFiles.push(queuedFile);
