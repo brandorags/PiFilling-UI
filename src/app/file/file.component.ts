@@ -17,13 +17,15 @@
 
 import { Component, OnInit } from '@angular/core';
 import { HttpEventType } from '@angular/common/http';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { FileService } from './file.service';
+
+import { RenameFileDialogComponent } from './rename-file-dialog/rename-file-dialog.component';
 
 import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
@@ -53,6 +55,7 @@ export class FileComponent implements OnInit {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
     private fileService: FileService
   ) {
     this.fileService.fileListEventEmitter.subscribe(fileList => {
@@ -112,7 +115,15 @@ export class FileComponent implements OnInit {
   }
 
   renameFile(event: any): void {
-    console.log(event.data);
+    const renameFileDialog = this.dialog.open(RenameFileDialogComponent, {
+      width: '350px',
+      data: { fileName: '' }
+    });
+    renameFileDialog.afterClosed().subscribe(fileName => {
+      if (fileName !== undefined) {
+        console.log(fileName);
+      }
+    });
   }
 
   deleteFile(event: any): void {
