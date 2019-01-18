@@ -29,6 +29,7 @@ import { RenameFileDialogComponent } from './rename-file-dialog/rename-file-dial
 
 import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
+import { FileRename } from '../models/file/file-rename';
 import { QueuedFile } from '../models/file/queued-file';
 import { Folder } from '../models/file/folder';
 import { FolderPath } from '../models/file/folder-path';
@@ -117,11 +118,29 @@ export class FileComponent implements OnInit {
   renameFile(event: any): void {
     const renameFileDialog = this.dialog.open(RenameFileDialogComponent, {
       width: '350px',
-      data: { fileName: '' }
+      data: { filename: '' }
     });
-    renameFileDialog.afterClosed().subscribe(fileName => {
-      if (fileName !== undefined) {
-        console.log(fileName);
+    renameFileDialog.afterClosed().subscribe(filename => {
+      if (filename !== undefined) {
+        let fileMetadata: FileMetadata = event.data;
+        let fileToRename = new FileRename();
+        fileToRename.oldFilename = fileMetadata.filename;
+        fileToRename.newFilename = filename + fileMetadata.fileType;
+        fileToRename.path = this.folderPath.toString();
+
+        this.fileService.renameFile(fileToRename).subscribe(
+          newFilename => {
+            for (let file of this.files) {
+              if (file.filename === fileToRename.oldFilename) {
+                file.filename = newFilename;
+                break;
+              }
+            }
+          },
+          error => {
+            console.log(error);
+          }
+        );
       }
     });
   }
