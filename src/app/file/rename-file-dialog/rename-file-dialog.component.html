@@ -18,10 +18,10 @@ limitations under the License.
 <h1 mat-dialog-title>Rename File/Folder</h1>
 <div mat-dialog-content>
   <mat-form-field>
-    <input matInput [(ngModel)]="dialogData.fileName">
+    <input matInput [(ngModel)]="dialogData.filename">
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="dialogData.fileName">Save</button>
+  <button mat-button [mat-dialog-close]="dialogData.filename">Save</button>
   <button mat-button (click)="closeDialog()">Cancel</button>
 </div>
