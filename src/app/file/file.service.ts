@@ -23,6 +23,7 @@ import { map } from 'rxjs/operators';
 
 import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
+import { FileRename } from '../models/file/file-rename';
 import { Folder } from '../models/file/folder';
 
 @Injectable({
@@ -53,6 +54,10 @@ export class FileService {
     });
 
     return this.http.request<any>(uploadRequest);
+  }
+
+  renameFile(fileToRename: FileRename): Observable<string> {
+    return this.http.post<string>(Constants.apiBaseUrl + 'api/file/rename-file', fileToRename, Constants.httpOptionsAuth);
   }
 
   createNewFolder(newFolder: Folder): Observable<Folder> {
