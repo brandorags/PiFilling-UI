@@ -22,6 +22,7 @@ import { FileService } from '../../app/file/file.service';
 
 import { Constants } from '../../app/common/constants';
 import { Folder } from 'src/app/models/file/folder';
+import { FileRename } from 'src/app/models/file/file-rename';
 
 describe('FileService', () => {
   let mockHttp: HttpTestingController;
@@ -66,6 +67,18 @@ describe('FileService', () => {
     expect(mockRequest.request.method).toEqual('POST');
     expect(mockRequest.request.withCredentials).toBeTruthy();
     expect(mockRequest.request.reportProgress).toBeTruthy();
+    expect(mockRequest.request.responseType).toEqual('json');
+  }));
+
+  it('should rename the file', inject([FileService], (service: FileService) => {
+    let fileToRename = new FileRename();
+
+    service.renameFile(fileToRename).subscribe();
+
+    let mockRequest = mockHttp.expectOne(Constants.apiBaseUrl + 'api/file/rename-file');
+
+    expect(mockRequest.request.method).toEqual('POST');
+    expect(mockRequest.request.withCredentials).toBeTruthy();
     expect(mockRequest.request.responseType).toEqual('json');
   }));
 
