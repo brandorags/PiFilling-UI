@@ -26,10 +26,12 @@ import { map } from 'rxjs/operators';
 import { FileService } from './file.service';
 
 import { RenameFileDialogComponent } from './rename-file-dialog/rename-file-dialog.component';
+import { DeleteFileDialogComponent } from './delete-file-dialog/delete-file-dialog.component';
 
 import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
 import { FileRename } from '../models/file/file-rename';
+import { FileDelete } from '../models/file/file-delete';
 import { QueuedFile } from '../models/file/queued-file';
 import { Folder } from '../models/file/folder';
 import { FolderPath } from '../models/file/folder-path';
@@ -146,7 +148,31 @@ export class FileComponent implements OnInit {
   }
 
   deleteFile(event: any): void {
-    console.log(event);
+    const deleteFileDialog = this.dialog.open(DeleteFileDialogComponent, {
+      width: '350px'
+    });
+    deleteFileDialog.afterClosed().subscribe(deleteFileConfirmed => {
+      if (deleteFileConfirmed) {
+        let fileMetadata: FileMetadata = event.data;
+        let fileToDelete = new FileDelete();
+        fileToDelete.filename = fileMetadata.filename;
+        fileToDelete.path = this.folderPath.toString();
+        fileToDelete.isDirectory = fileMetadata.isDirectory;
+
+        this.fileService.deleteFile(fileToDelete).subscribe(
+          () => {
+            let fileToDeleteIndex = this.files.findIndex(f => f.filename === fileToDelete.filename);
+            if (fileToDeleteIndex !== -1) {
+              this.files.splice(fileToDeleteIndex, 1);
+              console.log(`${fileToDelete.filename} has been deleted.`);
+            }
+          },
+          error => {
+            console.log(error);
+          }
+        );
+      }
+    });
   }
 
   private uploadFile(filename: string, formData: FormData, folderPath: string): void {
