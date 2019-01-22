@@ -24,6 +24,7 @@ import { map } from 'rxjs/operators';
 import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
 import { FileRename } from '../models/file/file-rename';
+import { FileDelete } from '../models/file/file-delete';
 import { Folder } from '../models/file/folder';
 
 @Injectable({
@@ -58,6 +59,14 @@ export class FileService {
 
   renameFile(fileToRename: FileRename): Observable<string> {
     return this.http.post<string>(Constants.apiBaseUrl + 'api/file/rename-file', fileToRename, Constants.httpOptionsAuth);
+  }
+
+  deleteFile(fileToDelete: FileDelete): Observable<any> {
+    const deleteRequest = new HttpRequest('DELETE', Constants.apiBaseUrl + 'api/file/delete-file', fileToDelete, {
+      withCredentials: true
+    });
+
+    return this.http.request<any>(deleteRequest);
   }
 
   createNewFolder(newFolder: Folder): Observable<Folder> {
