@@ -187,7 +187,8 @@ export class FileComponent implements OnInit {
             queuedFile.uploadProgress = Math.round(100 * event.loaded / event.total);
             break;
           case HttpEventType.Response:
-            let fileMetadata: FileMetadata = event.body;
+            let fileMetadata = new FileMetadata(event.body.filename, event.body.fileSize,
+              event.body.fileType, event.body.modifiedDate, event.body.isDirectory);
             this.files.push(fileMetadata);
             this.queuedFilesRemaining--;
         }
