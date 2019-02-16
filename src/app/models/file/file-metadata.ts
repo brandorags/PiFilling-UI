@@ -21,14 +21,16 @@ export class FileMetadata {
   fileType: string;
   modifiedDate: string;
   isDirectory: boolean;
+  isSelected: boolean;
 
   constructor(filename: string, fileSize: number, fileType: string,
-    modifiedDate: string, isDirectory: boolean) {
+    modifiedDate: string, isDirectory: boolean, isSelected: boolean) {
       this.filename = filename;
       this.fileSize = fileSize;
       this.fileType = fileType;
       this.modifiedDate = modifiedDate;
       this.isDirectory = isDirectory;
+      this.isSelected = isSelected;
     }
 
   isImageFile(): boolean {
