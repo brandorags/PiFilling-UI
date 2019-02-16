@@ -43,7 +43,7 @@ export class FileService {
 
     return this.http.get<FileMetadata[]>(Constants.apiBaseUrl + 'api/file/file-metadata', { params: params, withCredentials: true })
       .pipe(map(res => res.map(fm => new FileMetadata(fm.filename, fm.fileSize,
-        fm.fileType, fm.modifiedDate, fm.isDirectory))));
+        fm.fileType, fm.modifiedDate, fm.isDirectory, false))));
   }
 
   uploadFile(formData: FormData, folderPath: string): Observable<any> {

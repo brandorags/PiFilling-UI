@@ -91,6 +91,20 @@ export class FileComponent implements OnInit {
     this.getFiles(this.folderPath.toString());
   }
 
+  selectCard(event: any, file: FileMetadata): void {
+    if (!event.ctrlKey && !event.metaKey) {
+      let cardEls = document.getElementsByClassName('file-card');
+      for (let cardEl of cardEls as any) {
+        cardEl.classList.remove('file-card-selected');
+      }
+    }
+
+    let selectedCardEl = document.getElementById(`file_${file.filename}`);
+    selectedCardEl.classList.add('file-card-selected');
+
+    file.isSelected = true;
+  }
+
   getFiles(path: string): void {
     this.fileService.getFilesForPath(path).subscribe(
       files => {
@@ -188,7 +202,7 @@ export class FileComponent implements OnInit {
             break;
           case HttpEventType.Response:
             let fileMetadata = new FileMetadata(event.body.filename, event.body.fileSize,
-              event.body.fileType, event.body.modifiedDate, event.body.isDirectory);
+              event.body.fileType, event.body.modifiedDate, event.body.isDirectory, false);
             this.files.push(fileMetadata);
             this.queuedFilesRemaining--;
         }

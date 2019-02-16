@@ -15,10 +15,6 @@ limitations under the License.
 */
 
 
-.file-card-container {
-  margin: 20px;
-}
-
 .file-card {
   width: 167px;
   overflow-wrap: break-word;
@@ -33,6 +29,14 @@ limitations under the License.
   mat-icon {
     font-size: 50px;
   }
+}
+
+.file-card-selected {
+  outline: rgba(255, 64, 129, .6) auto 5px !important;
+}
+
+.file-card-container {
+  margin: 20px;
 }
 
 .file-drop-active {
