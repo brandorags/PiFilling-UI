@@ -40,10 +40,11 @@ limitations under the License.
 </div>
 
 <!-- file card grid -->
-<div class="file-card-container" (drop)="queueUpload($event.dataTransfer.files)">
+<div class="file-card-container" (click)="unselectAllFiles()" (drop)="queueUpload($event.dataTransfer.files)">
   <mat-grid-list cols="{{(isHandset$ | async) ? 1 : 3}}" rowHeight="375px">
-    <mat-grid-tile *ngFor="let file of files" [shAttachMenu]="fileMenu" [shMenuData]="file">
-      <mat-card id="file_{{file.filename}}" *ngIf="!file.isDirectory; else folderCard" class="file-card" tabindex="0" (click)="selectCard($event, file)">
+    <mat-grid-tile *ngFor="let file of files">
+      <mat-card id="file_{{file.filename}}" [shAttachMenu]="fileMenu" [shMenuData]="file" *ngIf="!file.isDirectory; else folderCard"
+      class="file-card" tabindex="0" (contextmenu)="selectCard($event, file)" (click)="selectCard($event, file)">
         <span *ngIf="file.isImageFile(); else nonImageFileCard">
           <img mat-card-image src="{{fileStorageBaseUrl}}{{folderPath}}/{{file.filename}}" alt="{{file.filename}}">
         </span>
@@ -55,7 +56,9 @@ limitations under the License.
         </mat-card-content>
       </mat-card>
       <ng-template #folderCard>
-        <mat-card id="file_{{file.filename}}" class="file-card" (click)="selectCard($event, file)" (dblclick)="navigateFromFolderCard(file.filename)" tabindex="0">
+        <mat-card id="file_{{file.filename}}" [shAttachMenu]="fileMenu" [shMenuData]="file" class="file-card"
+        (contextmenu)="selectCard($event, file)" (click)="selectCard($event, file)" 
+        (dblclick)="navigateFromFolderCard(file.filename)" tabindex="0">
           <mat-icon>folder</mat-icon>
           <mat-card-content>
             {{file.filename}}
@@ -89,12 +92,12 @@ limitations under the License.
 
 <!-- custom context file menu -->
 <sh-context-menu #fileMenu>
-  <ng-template shContextMenuItem (click)="renameFile($event)">
+  <ng-template *ngIf="filesSelectedCount === 1" shContextMenuItem (click)="renameFile($event)">
     <div>
       <mat-icon>edit</mat-icon> Rename
     </div>
   </ng-template>
-  <ng-template shContextMenuItem [divider]="true"></ng-template>
+  <ng-template *ngIf="filesSelectedCount === 1" shContextMenuItem [divider]="true"></ng-template>
   <ng-template shContextMenuItem (click)="deleteFile($event)">
     <div>
       <mat-icon>delete</mat-icon> Delete
