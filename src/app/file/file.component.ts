@@ -44,8 +44,11 @@ import { FolderPath } from '../models/file/folder-path';
 export class FileComponent implements OnInit {
 
   files: FileMetadata[] = [];
+  filesSelectedCount = 0;
+
   queuedFiles: QueuedFile[] = [];
   queuedFilesRemaining = 0;
+
   folderPath: FolderPath = new FolderPath();
 
   fileStorageBaseUrl = Constants.fileStorageBaseUrl;
@@ -92,17 +95,31 @@ export class FileComponent implements OnInit {
   }
 
   selectCard(event: any, file: FileMetadata): void {
+    event.stopPropagation();
+
     if (!event.ctrlKey && !event.metaKey) {
-      let cardEls = document.getElementsByClassName('file-card');
-      for (let cardEl of cardEls as any) {
-        cardEl.classList.remove('file-card-selected');
-      }
+      this.unselectAllFiles();
     }
 
     let selectedCardEl = document.getElementById(`file_${file.filename}`);
     selectedCardEl.classList.add('file-card-selected');
 
     file.isSelected = true;
+
+    this.filesSelectedCount++;
+  }
+
+  unselectAllFiles(): void {
+    let cardEls = document.getElementsByClassName('file-card');
+    for (let cardEl of cardEls as any) {
+      cardEl.classList.remove('file-card-selected');
+    }
+
+    for (let f of this.files) {
+      f.isSelected = false;
+    }
+
+    this.filesSelectedCount = 0;
   }
 
   getFiles(path: string): void {
