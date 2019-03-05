@@ -94,22 +94,80 @@ export class FileComponent implements OnInit {
     this.getFiles(this.folderPath.toString());
   }
 
-  selectCard(event: any, file: FileMetadata): void {
+  onCardClick(event: any, file: FileMetadata, isRightClick: boolean): void {
     event.stopPropagation();
 
-    if (!event.ctrlKey && !event.metaKey) {
-      this.unselectAllFiles();
+    if (event.shiftKey) {
+      this.multiSelectCards(file);
+    } else if (event.ctrlKey || event.metaKey) {
+      this.singleSelectCard(file, isRightClick);
+    } else {
+      this.unselectAllCards();
+      this.singleSelectCard(file, isRightClick);
     }
-
-    let selectedCardEl = document.getElementById(`file_${file.filename}`);
-    selectedCardEl.classList.add('file-card-selected');
-
-    file.isSelected = true;
-
-    this.filesSelectedCount++;
   }
 
-  unselectAllFiles(): void {
+  singleSelectCard(file: FileMetadata, isRightClick: boolean): void {
+    let selectedCardEl = document.getElementById(`file_${file.filename}`);
+
+    let fileCardSelectedCssClass = 'file-card-selected';
+    let isCardAlreadySelected = selectedCardEl.classList.contains(fileCardSelectedCssClass);
+
+    if (isCardAlreadySelected) {
+      if (isRightClick) {
+        return;
+      }
+
+      selectedCardEl.classList.remove(fileCardSelectedCssClass);
+      file.isSelected = false;
+      this.filesSelectedCount--;
+
+      selectedCardEl.blur();
+    } else {
+      selectedCardEl.classList.add(fileCardSelectedCssClass);
+      file.isSelected = true;
+      this.filesSelectedCount++;
+    }
+  }
+
+  multiSelectCards(file: FileMetadata): void {
+    let selectedCardIndices = [];
+    for (let i = 0; i < this.files.length; i++) {
+      let f = this.files[i];
+      if (f.isSelected) {
+        selectedCardIndices.push(i);
+      }
+    }
+
+    let selectedCardIndex = this.files.findIndex(f => f.filename === file.filename);
+    let firstCardToSelectIndex: number;
+    let lastCardToSelectIndex: number;
+    if (selectedCardIndex < selectedCardIndices[0]) {
+      firstCardToSelectIndex = selectedCardIndex;
+      lastCardToSelectIndex = selectedCardIndices[0];
+    } else {
+      firstCardToSelectIndex = selectedCardIndices[0];
+      lastCardToSelectIndex = selectedCardIndex;
+    }
+
+    for (let i = 0; i < this.files.length; i++) {
+      let f = this.files[i];
+      let cardEl = document.getElementById(`file_${f.filename}`);
+      let fileCardSelectedCssClass = 'file-card-selected';
+
+      if (i >= firstCardToSelectIndex && i <= lastCardToSelectIndex) {
+        cardEl.classList.add(fileCardSelectedCssClass);
+        f.isSelected = true;
+        this.filesSelectedCount++;
+      } else {
+        cardEl.classList.remove(fileCardSelectedCssClass);
+        f.isSelected = false;
+        this.filesSelectedCount--;
+      }
+    }
+  }
+
+  unselectAllCards(): void {
     let cardEls = document.getElementsByClassName('file-card');
     for (let cardEl of cardEls as any) {
       cardEl.classList.remove('file-card-selected');
