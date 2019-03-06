@@ -61,8 +61,8 @@ export class FileService {
     return this.http.post<string>(Constants.apiBaseUrl + 'api/file/rename-file', fileToRename, Constants.httpOptionsAuth);
   }
 
-  deleteFile(fileToDelete: FileDelete): Observable<any> {
-    const deleteRequest = new HttpRequest('DELETE', Constants.apiBaseUrl + 'api/file/delete-file', fileToDelete, {
+  deleteFiles(filesToDelete: FileDelete[]): Observable<any> {
+    const deleteRequest = new HttpRequest('DELETE', Constants.apiBaseUrl + 'api/file/delete-files', filesToDelete, {
       withCredentials: true
     });
 
