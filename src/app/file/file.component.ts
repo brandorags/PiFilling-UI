@@ -236,24 +236,32 @@ export class FileComponent implements OnInit {
     });
   }
 
-  deleteFile(event: any): void {
+  deleteFiles(): void {
     const deleteFileDialog = this.dialog.open(DeleteFileDialogComponent, {
       width: '350px'
     });
     deleteFileDialog.afterClosed().subscribe(deleteFileConfirmed => {
       if (deleteFileConfirmed) {
-        let fileMetadata: FileMetadata = event.data;
-        let fileToDelete = new FileDelete();
-        fileToDelete.filename = fileMetadata.filename;
-        fileToDelete.path = this.folderPath.toString();
-        fileToDelete.isDirectory = fileMetadata.isDirectory;
+        let filesToDelete = [];
+        for (let f of this.files) {
+          if (f.isSelected) {
+            let fileToDelete = new FileDelete();
+            fileToDelete.filename = f.filename;
+            fileToDelete.path = this.folderPath.toString();
+            fileToDelete.isDirectory = f.isDirectory;
 
-        this.fileService.deleteFile(fileToDelete).subscribe(
+            filesToDelete.push(fileToDelete);
+          }
+        }
+
+        this.fileService.deleteFiles(filesToDelete).subscribe(
           () => {
-            let fileToDeleteIndex = this.files.findIndex(f => f.filename === fileToDelete.filename);
-            if (fileToDeleteIndex !== -1) {
-              this.files.splice(fileToDeleteIndex, 1);
-              console.log(`${fileToDelete.filename} has been deleted.`);
+            for (let deletedFile of filesToDelete) {
+              let deletedFileIndex = this.files.findIndex(f => f.filename === deletedFile.filename);
+              if (deletedFileIndex !== -1) {
+                this.files.splice(deletedFileIndex, 1);
+                console.log(`${deletedFile.filename} has been deleted.`);
+              }
             }
           },
           error => {
