@@ -15,7 +15,7 @@
  */
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { HttpEventType } from '@angular/common/http';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
@@ -164,6 +164,23 @@ export class FileComponent implements OnInit {
         f.isSelected = false;
         this.filesSelectedCount--;
       }
+    }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  selectAllCards(event: KeyboardEvent): void {
+    // select all cards when the user presses ctrl+a or cmd+a
+    if ((event.ctrlKey || event.metaKey) && event.keyCode === 65) {
+      let cardEls = document.getElementsByClassName('file-card');
+      for (let cardEl of cardEls as any) {
+        cardEl.classList.add('file-card-selected');
+      }
+
+      for (let f of this.files) {
+        f.isSelected = true;
+      }
+
+      this.filesSelectedCount = this.files.length;
     }
   }
 
