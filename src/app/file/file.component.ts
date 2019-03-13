@@ -44,6 +44,7 @@ import { FolderPath } from '../models/file/folder-path';
 export class FileComponent implements OnInit {
 
   files: FileMetadata[] = [];
+  loadingFiles = false;
   filesSelectedCount = 0;
 
   queuedFiles: QueuedFile[] = [];
@@ -198,6 +199,9 @@ export class FileComponent implements OnInit {
   }
 
   getFiles(path: string): void {
+    this.loadingFiles = true;
+    this.files = [];
+
     this.fileService.getFilesForPath(path).subscribe(
       files => {
         this.files = files;
@@ -205,7 +209,7 @@ export class FileComponent implements OnInit {
       error => {
         console.log(error);
       }
-    );
+    ).add(() => this.loadingFiles = false);
   }
 
   clearQueuedFiles(): void {
