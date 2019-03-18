@@ -74,7 +74,9 @@ export class AppComponent implements OnInit {
       data: { folderName: '' }
     });
     newFolderDialog.afterClosed().subscribe(folderName => {
-      this.fileService.newFolderEventEmitter.emit(folderName);
+      if (folderName !== undefined) {
+        this.fileService.newFolderEventEmitter.emit(folderName);
+      }
     });
   }
 
