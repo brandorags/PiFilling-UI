@@ -30,6 +30,7 @@ import { MatButtonModule,
   MatProgressBarModule,
   MatDividerModule,
   MatDialogModule,
+  MatProgressSpinnerModule,
   MatSnackBarModule,
   MAT_SNACK_BAR_DEFAULT_OPTIONS
 } from '@angular/material';
@@ -50,6 +51,7 @@ import { MatButtonModule,
     MatProgressBarModule,
     MatDividerModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
     MatSnackBarModule
   ],
   exports: [
@@ -67,6 +69,7 @@ import { MatButtonModule,
     MatProgressBarModule,
     MatDividerModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
     MatSnackBarModule
   ],
   providers: [
