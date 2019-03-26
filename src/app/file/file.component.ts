@@ -216,14 +216,20 @@ export class FileComponent implements OnInit {
     this.queuedFiles = [];
   }
 
-  queueUpload(fileList: FileList): void {
-    for (let i = 0; i < fileList.length; i++) {
-      let file = fileList[i];
+  queueUpload(event: any): void {
+    let items = event.dataTransfer.items;
+    for (let i = 0; i < items.length; i++) {
+      let item = items[i];
+      if (item.kind !== 'file') {
+        continue;
+      }
 
-      let formData = new FormData();
-      formData.append(file.name, file, file.name);
-
-      this.uploadFile(file.name, formData, this.folderPath.toString());
+      let entry = item.webkitGetAsEntry();
+      if (entry.isFile) {
+        this.prepareFileForUpload(entry);
+      } else if (entry.isDirectory) {
+        this.prepareDirectoryForUpload(entry);
+      }
     }
   }
 
@@ -281,7 +287,6 @@ export class FileComponent implements OnInit {
               let deletedFileIndex = this.files.findIndex(f => f.filename === deletedFile.filename);
               if (deletedFileIndex !== -1) {
                 this.files.splice(deletedFileIndex, 1);
-                console.log(`${deletedFile.filename} has been deleted.`);
               }
             }
           },
@@ -290,6 +295,72 @@ export class FileComponent implements OnInit {
           }
         );
       }
+    });
+  }
+
+  private prepareFileForUpload(fileEntry: any): void {
+    let filePath = this.folderPath.toString() + fileEntry.fullPath;
+    let filePathWithFilenameRemoved = filePath.slice(0, filePath.lastIndexOf('/'));
+
+    let fileEntryPromise = new Promise((resolve, reject) => {
+      fileEntry.file(
+        (file: File) => {
+          resolve(file);
+        },
+        (error: any) => {
+          reject(error);
+        }
+      );
+    });
+
+    fileEntryPromise.then((file: File) => {
+      let formData = new FormData();
+      formData.append(file.name, file, file.name);
+
+      this.uploadFile(file.name, formData, filePathWithFilenameRemoved);
+    });
+  }
+
+  private prepareDirectoryForUpload(directoryEntry: any): void {
+    let directoryPath = this.folderPath.toString() + directoryEntry.fullPath;
+    let directoryPathWithLastFolderRemoved = directoryPath.slice(0, directoryPath.lastIndexOf('/'));
+    let directoryName = directoryEntry.name;
+
+    let folder = new Folder();
+    folder.name = directoryName;
+    folder.path = directoryPathWithLastFolderRemoved;
+
+    this.fileService.createNewFolder(folder).subscribe(
+      createdFolder => {
+        let folderMetadata = new FileMetadata(createdFolder.name, 0, null, null, true, false);
+        this.files.push(folderMetadata);
+      },
+      error => {
+        console.log(error);
+      }
+    )
+    .add(() => {
+      let directoryReader = directoryEntry.createReader();
+      let directoryReaderPromise = new Promise((resolve, reject) => {
+        directoryReader.readEntries(
+          (entries: any) => {
+            resolve(entries);
+          },
+          (error: any) => {
+            reject(error);
+          }
+        );
+      });
+
+      directoryReaderPromise.then((entries: any) => {
+        for (let entry of entries) {
+          if (entry.isFile) {
+            this.prepareFileForUpload(entry);
+          } else if (entry.isDirectory) {
+            this.prepareDirectoryForUpload(entry);
+          }
+        }
+      });
     });
   }
 
@@ -317,11 +388,13 @@ export class FileComponent implements OnInit {
     );
   }
 
-  private createNewFolder(newFolder: Folder) {
+  private createNewFolder(newFolder: Folder): void {
     this.fileService.createNewFolder(newFolder).subscribe(
       createdFolder => {
         this.snackBar.open(`${createdFolder.name} has been created.`);
-        this.getFiles(this.folderPath.toString());
+
+        let folderMetadata = new FileMetadata(createdFolder.name, 0, null, null, true, false);
+        this.files.push(folderMetadata);
       },
       error => {
         console.log(error);
