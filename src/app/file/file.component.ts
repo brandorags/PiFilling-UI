@@ -333,7 +333,11 @@ export class FileComponent implements OnInit {
     this.fileService.createNewFolder(folder).subscribe(
       createdFolder => {
         let folderMetadata = new FileMetadata(createdFolder.name, 0, null, null, true, false);
-        this.files.push(folderMetadata);
+
+        // only add to the files list if the folder is in the current path
+        if (directoryPathWithLastFolderRemoved === this.folderPath.toString()) {
+          this.files.push(folderMetadata);
+        }
       },
       error => {
         console.log(error);
@@ -365,7 +369,9 @@ export class FileComponent implements OnInit {
   }
 
   private uploadFile(filename: string, formData: FormData, folderPath: string): void {
-    let queuedFile = new QueuedFile(filename, 0);
+    let isFileInCurrentFolderPath = (folderPath === this.folderPath.toString());
+
+    let queuedFile = new QueuedFile(isFileInCurrentFolderPath ? filename : `${folderPath}/${filename}`, 0);
     this.queuedFiles.push(queuedFile);
     this.queuedFilesRemaining++;
 
@@ -378,8 +384,11 @@ export class FileComponent implements OnInit {
           case HttpEventType.Response:
             let fileMetadata = new FileMetadata(event.body.filename, event.body.fileSize,
               event.body.fileType, event.body.modifiedDate, event.body.isDirectory, false);
-            this.files.push(fileMetadata);
             this.queuedFilesRemaining--;
+
+            if (isFileInCurrentFolderPath) {
+              this.files.push(fileMetadata);
+            }
         }
       },
       error => {
