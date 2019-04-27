@@ -19,8 +19,8 @@ limitations under the License.
   <h1>PiFilling</h1>
   <form (ngSubmit)="loginUser()" #loginUserForm="ngForm">
     <mat-form-field>
-      <input type="text" name="username" placeholder="Username" matInput 
-      [(ngModel)]="user.username" #username="ngModel">
+      <input #usernameTextbox type="text" name="username" placeholder="Username"
+      matInput [(ngModel)]="user.username" #username="ngModel">
     </mat-form-field>
     <br>
     <mat-form-field>
@@ -28,6 +28,6 @@ limitations under the License.
       [(ngModel)]="user.password" #password="ngModel">
     </mat-form-field>
     <br>
-    <button type="submit" mat-button>Submit</button>
+    <button #loginButton type="submit" mat-button>Submit</button>
   </form>
 </div>
