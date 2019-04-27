@@ -15,7 +15,7 @@
  */
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 
@@ -33,6 +33,11 @@ export class LoginComponent implements OnInit {
 
   user = new User();
 
+  @ViewChild('usernameTextbox')
+  usernameTextbox: any;
+  @ViewChild('loginButton')
+  loginButton: any;
+
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
@@ -40,9 +45,13 @@ export class LoginComponent implements OnInit {
     private sessionTimerService: SessionTimerService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.usernameTextbox.nativeElement.focus();
+  }
 
   loginUser(): void {
+    this.loginButton.disabled = true;
+
     this.authService.login(this.user)
       .subscribe(
         user => {
@@ -52,6 +61,7 @@ export class LoginComponent implements OnInit {
         },
         error => {
           console.log(error.message);
+          this.loginButton.disabled = false;
         }
       );
   }
