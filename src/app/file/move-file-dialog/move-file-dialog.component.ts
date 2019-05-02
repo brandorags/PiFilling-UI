@@ -20,6 +20,9 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 
 import { FileService } from '../file.service';
 
+import { Folder } from '../../models/file/folder';
+import { FolderPath } from '../../models/file/folder-path';
+
 @Component({
   selector: 'app-move-file-dialog',
   templateUrl: './move-file-dialog.component.html',
@@ -27,12 +30,29 @@ import { FileService } from '../file.service';
 })
 export class MoveFileDialogComponent implements OnInit {
 
+  folderList: Folder[] = [];
+  folderPath: FolderPath = new FolderPath();
+
+  isLoading = false;
+
   constructor(
-    @Inject(MAT_DIALOG_DATA) public dialogData: any
+    @Inject(MAT_DIALOG_DATA) public dialogData: any,
+    private fileService: FileService
   ) { }
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.isLoading = true;
+
+    this.folderPath.pathArray.push(this.dialogData.path);
+
+    this.fileService.getFoldersForPath(this.folderPath.toString()).subscribe(
+      folderList => {
+        this.folderList = folderList;
+      },
+      error => {
+        console.log(error);
+      }
+    ).add(() => this.isLoading = false);
   }
 
 }

@@ -17,7 +17,16 @@ limitations under the License.
 
 <h1 mat-dialog-title>Move File(s)/Folder(s)</h1>
 <div mat-dialog-content>
-  <p>Select the destination below</p>
+  <div *ngIf="!isLoading; else loadingSpinner">
+    <mat-list>
+      <mat-list-item *ngFor="let folder of folderList">
+          <mat-icon>folder</mat-icon> {{folder.name}}
+      </mat-list-item>
+    </mat-list>
+  </div>
+  <ng-template #loadingSpinner>
+    <mat-spinner color="accent"></mat-spinner>
+  </ng-template>
 </div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]="true">Move</button>
