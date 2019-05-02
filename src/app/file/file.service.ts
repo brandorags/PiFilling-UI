@@ -46,6 +46,13 @@ export class FileService {
         fm.fileType, fm.modifiedDate, fm.isDirectory, false))));
   }
 
+  getFoldersForPath(path: string): Observable<Folder[]> {
+    const params = new HttpParams()
+      .set('path', path);
+
+      return this.http.get<Folder[]>(Constants.apiBaseUrl + 'api/file/directory-list', { params: params, withCredentials: true });
+  }
+
   uploadFile(formData: FormData, folderPath: string): Observable<any> {
     const headers = new HttpHeaders({'Current-Directory': folderPath});
     const uploadRequest = new HttpRequest('POST', Constants.apiBaseUrl + 'api/file/upload-file', formData, {
