@@ -27,6 +27,7 @@ import { FileService } from './file.service';
 
 import { RenameFileDialogComponent } from './rename-file-dialog/rename-file-dialog.component';
 import { DeleteFileDialogComponent } from './delete-file-dialog/delete-file-dialog.component';
+import { MoveFileDialogComponent } from './move-file-dialog/move-file-dialog.component';
 
 import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
@@ -260,6 +261,14 @@ export class FileComponent implements OnInit {
           }
         );
       }
+    });
+  }
+
+  moveFiles(event: any): void {
+    const moveFileDialog = this.dialog.open(MoveFileDialogComponent, {
+      width: '350px',
+      maxWidth: '350px',
+      data: { path: this.folderPath.toString() }
     });
   }
 
