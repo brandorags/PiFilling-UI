@@ -33,6 +33,7 @@ import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
 import { FileRename } from '../models/file/file-rename';
 import { FileDelete } from '../models/file/file-delete';
+import { FileMove } from '../models/file/file-move';
 import { QueuedFile } from '../models/file/queued-file';
 import { Folder } from '../models/file/folder';
 import { FolderPath } from '../models/file/folder-path';
@@ -264,11 +265,47 @@ export class FileComponent implements OnInit {
     });
   }
 
-  moveFiles(event: any): void {
+  moveFiles(): void {
     const moveFileDialog = this.dialog.open(MoveFileDialogComponent, {
       width: '350px',
       maxWidth: '350px',
-      data: { path: this.folderPath.toString() }
+      data: {
+        files: this.files,
+        path: this.folderPath.toString()
+      }
+    });
+
+    moveFileDialog.afterClosed().subscribe(destinationFolder => {
+      if (!destinationFolder) {
+        return;
+      }
+
+      let destinationPath = `${destinationFolder.path}/${destinationFolder.name}`;
+      let filesToMove = [];
+      for (let f of this.files) {
+        if (f.isSelected) {
+          let fileToMove = new FileMove();
+          fileToMove.filename = f.filename;
+          fileToMove.sourcePath = `${this.folderPath.toString()}/${f.filename}`;
+          fileToMove.destinationPath = destinationPath;
+
+          filesToMove.push(fileToMove);
+        }
+      }
+
+      this.fileService.moveFiles(filesToMove).subscribe(
+        () => {
+          for (let movedFile of filesToMove) {
+            let movedFileIndex = this.files.findIndex(f => f.filename === movedFile.filename);
+            if (movedFileIndex !== -1) {
+              this.files.splice(movedFileIndex, 1);
+            }
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
     });
   }
 

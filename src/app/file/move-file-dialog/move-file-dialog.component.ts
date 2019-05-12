@@ -16,11 +16,12 @@
 
 
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { FileService } from '../file.service';
 
 import { Folder } from '../../models/file/folder';
+import { FileMetadata } from 'src/app/models/file/file-metadata';
 
 @Component({
   selector: 'app-move-file-dialog',
@@ -33,33 +34,41 @@ export class MoveFileDialogComponent implements OnInit {
   currentFolder: Folder = new Folder();
   selectedFolder: Folder = new Folder();
 
+  selectedFilesToMove: FileMetadata[] = [];
+
   isLoading = false;
 
   constructor(
+    public dialogRef: MatDialogRef<MoveFileDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: any,
     private fileService: FileService
   ) { }
 
   ngOnInit(): void {
     this.isLoading = true;
+
+    for (let file of this.dialogData.files) {
+      if (file.isSelected) {
+        this.selectedFilesToMove.push(file);
+      }
+    }
+
     this.getFoldersForPath(this.dialogData.path);
+  }
+
+  closeDialog(): void {
+    this.dialogRef.close();
   }
 
   navigateOneFolderUp(): void {
     let splitPath = this.currentFolder.path.split('/');
-
-    // don't try to navigate to the top-level folder
-    if (splitPath.length === 1) {
-      return;
-    }
-
     let pathWithLastFolderRemoved = splitPath.splice(0, splitPath.length - 1).join('/');
+
     this.getFoldersForPath(pathWithLastFolderRemoved);
   }
 
   navigateOneFolderDown(): void {
-    if (this.selectedFolder.name === undefined &&
-      this.selectedFolder.path === undefined) {
+    if (this.selectedFolder.name === undefined) {
       return;
     }
 
@@ -69,7 +78,15 @@ export class MoveFileDialogComponent implements OnInit {
   private getFoldersForPath(path: string): void {
     this.fileService.getFoldersForPath(path).subscribe(
       folderList => {
-        this.folderList = folderList;
+        this.folderList = [];
+
+        // only show unselected folders
+        for (let folder of folderList) {
+          let folderIndex = this.selectedFilesToMove.findIndex(f => f.filename === folder.name);
+          if (folderIndex === -1) {
+            this.folderList.push(folder);
+          }
+        }
 
         let splitPath = path.split('/');
         this.currentFolder.name = splitPath[splitPath.length - 1];
