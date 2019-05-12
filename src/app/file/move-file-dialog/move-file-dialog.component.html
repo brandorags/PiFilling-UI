@@ -22,7 +22,9 @@ limitations under the License.
     <button mat-icon-button class="forward-button" (click)="navigateOneFolderDown()"><mat-icon>arrow_forward</mat-icon></button>
     <mat-radio-group class="vertical-radio-group" [(ngModel)]="selectedFolder">
       <mat-radio-button class="vertical-radio-button" *ngFor="let folder of folderList" [value]="folder">
+        <span class="disable-highlight">
           <mat-icon>folder</mat-icon> {{folder.name}}
+        </span>
       </mat-radio-button>
     </mat-radio-group>
   <ng-template #loadingSpinner>
@@ -30,6 +32,6 @@ limitations under the License.
   </ng-template>
 </div>
 <div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="true">Move</button>
-  <button mat-button [mat-dialog-close]="false">Cancel</button>
+  <button mat-button [disabled]="selectedFolder.name === undefined" [mat-dialog-close]="selectedFolder">Move</button>
+  <button mat-button (click)="closeDialog()">Cancel</button>
 </div>
