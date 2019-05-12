@@ -25,6 +25,7 @@ import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
 import { FileRename } from '../models/file/file-rename';
 import { FileDelete } from '../models/file/file-delete';
+import { FileMove } from '../models/file/file-move';
 import { Folder } from '../models/file/folder';
 
 @Injectable({
@@ -44,6 +45,13 @@ export class FileService {
     return this.http.get<FileMetadata[]>(Constants.apiBaseUrl + 'api/file/file-metadata', { params: params, withCredentials: true })
       .pipe(map(res => res.map(fm => new FileMetadata(fm.filename, fm.fileSize,
         fm.fileType, fm.modifiedDate, fm.isDirectory, false))));
+  }
+
+  getFoldersForPath(path: string): Observable<Folder[]> {
+    const params = new HttpParams()
+      .set('path', path);
+
+      return this.http.get<Folder[]>(Constants.apiBaseUrl + 'api/file/directory-list', { params: params, withCredentials: true });
   }
 
   uploadFile(formData: FormData, folderPath: string): Observable<any> {
@@ -67,6 +75,10 @@ export class FileService {
     });
 
     return this.http.request<any>(deleteRequest);
+  }
+
+  moveFiles(filesToMove: FileMove[]): Observable<any> {
+    return this.http.post<any>(Constants.apiBaseUrl + 'api/file/move-files', filesToMove, Constants.httpOptionsAuth);
   }
 
   createNewFolder(newFolder: Folder): Observable<Folder> {
