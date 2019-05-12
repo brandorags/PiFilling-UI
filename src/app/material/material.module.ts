@@ -18,6 +18,7 @@
 import { NgModule } from '@angular/core';
 import { MatButtonModule,
   MatCheckboxModule,
+  MatRadioModule,
   MatToolbarModule,
   MatSidenavModule,
   MatIconModule,
@@ -39,6 +40,7 @@ import { MatButtonModule,
   imports: [
     MatButtonModule,
     MatCheckboxModule,
+    MatRadioModule,
     MatToolbarModule,
     MatSidenavModule,
     MatIconModule,
@@ -57,6 +59,7 @@ import { MatButtonModule,
   exports: [
     MatButtonModule,
     MatCheckboxModule,
+    MatRadioModule,
     MatToolbarModule,
     MatSidenavModule,
     MatIconModule,
