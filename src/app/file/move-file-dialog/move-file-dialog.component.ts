@@ -21,7 +21,6 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 import { FileService } from '../file.service';
 
 import { Folder } from '../../models/file/folder';
-import { FolderPath } from '../../models/file/folder-path';
 
 @Component({
   selector: 'app-move-file-dialog',
@@ -31,7 +30,8 @@ import { FolderPath } from '../../models/file/folder-path';
 export class MoveFileDialogComponent implements OnInit {
 
   folderList: Folder[] = [];
-  folderPath: FolderPath = new FolderPath();
+  currentFolder: Folder = new Folder();
+  selectedFolder: Folder = new Folder();
 
   isLoading = false;
 
@@ -42,12 +42,38 @@ export class MoveFileDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+    this.getFoldersForPath(this.dialogData.path);
+  }
 
-    this.folderPath.pathArray.push(this.dialogData.path);
+  navigateOneFolderUp(): void {
+    let splitPath = this.currentFolder.path.split('/');
 
-    this.fileService.getFoldersForPath(this.folderPath.toString()).subscribe(
+    // don't try to navigate to the top-level folder
+    if (splitPath.length === 1) {
+      return;
+    }
+
+    let pathWithLastFolderRemoved = splitPath.splice(0, splitPath.length - 1).join('/');
+    this.getFoldersForPath(pathWithLastFolderRemoved);
+  }
+
+  navigateOneFolderDown(): void {
+    if (this.selectedFolder.name === undefined &&
+      this.selectedFolder.path === undefined) {
+      return;
+    }
+
+    this.getFoldersForPath(`${this.selectedFolder.path}/${this.selectedFolder.name}`);
+  }
+
+  private getFoldersForPath(path: string): void {
+    this.fileService.getFoldersForPath(path).subscribe(
       folderList => {
         this.folderList = folderList;
+
+        let splitPath = path.split('/');
+        this.currentFolder.name = splitPath[splitPath.length - 1];
+        this.currentFolder.path = path;
       },
       error => {
         console.log(error);
