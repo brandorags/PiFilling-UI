@@ -25,6 +25,7 @@ import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
 import { FileRename } from '../models/file/file-rename';
 import { FileDelete } from '../models/file/file-delete';
+import { FileMove } from '../models/file/file-move';
 import { Folder } from '../models/file/folder';
 
 @Injectable({
@@ -74,6 +75,10 @@ export class FileService {
     });
 
     return this.http.request<any>(deleteRequest);
+  }
+
+  moveFiles(filesToMove: FileMove[]): Observable<any> {
+    return this.http.post<any>(Constants.apiBaseUrl + 'api/file/move-files', filesToMove, Constants.httpOptionsAuth);
   }
 
   createNewFolder(newFolder: Folder): Observable<Folder> {
