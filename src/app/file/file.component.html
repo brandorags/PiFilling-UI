@@ -104,7 +104,12 @@ limitations under the License.
       <mat-icon>edit</mat-icon> Rename
     </div>
   </ng-template>
-  <ng-template *ngIf="filesSelectedCount === 1" shContextMenuItem [divider]="true"></ng-template>
+  <ng-template shContextMenuItem (click)="moveFiles()">
+    <div>
+      <mat-icon>folder</mat-icon> Move
+    </div>
+  </ng-template>
+  <ng-template shContextMenuItem [divider]="true"></ng-template>
   <ng-template shContextMenuItem (click)="deleteFiles()">
     <div>
       <mat-icon>delete</mat-icon> Delete

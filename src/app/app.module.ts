@@ -45,6 +45,7 @@ import { FileComponent } from './file/file.component';
 import { NewFolderDialogComponent } from './file/new-folder-dialog/new-folder-dialog.component';
 import { RenameFileDialogComponent } from './file/rename-file-dialog/rename-file-dialog.component';
 import { DeleteFileDialogComponent } from './file/delete-file-dialog/delete-file-dialog.component';
+import { MoveFileDialogComponent } from './file/move-file-dialog/move-file-dialog.component';
 
 
 @NgModule({
@@ -55,12 +56,14 @@ import { DeleteFileDialogComponent } from './file/delete-file-dialog/delete-file
     FileComponent,
     NewFolderDialogComponent,
     RenameFileDialogComponent,
-    DeleteFileDialogComponent
+    DeleteFileDialogComponent,
+    MoveFileDialogComponent
   ],
   entryComponents: [
     NewFolderDialogComponent,
     RenameFileDialogComponent,
-    DeleteFileDialogComponent
+    DeleteFileDialogComponent,
+    MoveFileDialogComponent
   ],
   imports: [
     BrowserModule,
