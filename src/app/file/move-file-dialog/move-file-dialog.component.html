@@ -18,12 +18,13 @@ limitations under the License.
 <h1 mat-dialog-title>Move File(s)/Folder(s)</h1>
 <div mat-dialog-content>
   <div *ngIf="!isLoading; else loadingSpinner">
-    <mat-list>
-      <mat-list-item *ngFor="let folder of folderList">
+    <button mat-icon-button (click)="navigateOneFolderUp()"><mat-icon>arrow_back</mat-icon></button> {{currentFolder.name}}
+    <button mat-icon-button class="forward-button" (click)="navigateOneFolderDown()"><mat-icon>arrow_forward</mat-icon></button>
+    <mat-radio-group class="vertical-radio-group" [(ngModel)]="selectedFolder">
+      <mat-radio-button class="vertical-radio-button" *ngFor="let folder of folderList" [value]="folder">
           <mat-icon>folder</mat-icon> {{folder.name}}
-      </mat-list-item>
-    </mat-list>
-  </div>
+      </mat-radio-button>
+    </mat-radio-group>
   <ng-template #loadingSpinner>
     <mat-spinner color="accent"></mat-spinner>
   </ng-template>
