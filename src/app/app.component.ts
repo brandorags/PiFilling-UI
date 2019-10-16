@@ -15,13 +15,13 @@
  */
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material';
 
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { AuthenticationService } from './common/authentication.service';
 import { FileService } from './file/file.service';
@@ -35,7 +35,10 @@ import { NewFolderDialogComponent } from './file/new-folder-dialog/new-folder-di
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+
+  partialFilenameChanged = new Subject<any>();
+  partialFilenameChangedSubscription: Subscription;
 
   isUserLoggedIn: boolean;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -55,13 +58,28 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.authService.isUserLoggedInObservable.subscribe(isLoggedIn => this.isUserLoggedIn = isLoggedIn);
 
-    let currentUserCookie = Constants.userCookieKey;
+    this.partialFilenameChangedSubscription = this.partialFilenameChanged
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      )
+      .subscribe(event => {
+        let partialFilename = event.srcElement.value;
+        if (partialFilename.length >= 2) {
+          this.fileService.partialFilenameSearchEmitter.emit(partialFilename);
+        }
+      });
 
+    let currentUserCookie = Constants.userCookieKey;
     if (!document.cookie.includes(currentUserCookie)) {
       this.isUserLoggedIn = false;
     } else {
       this.isUserLoggedIn = true;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.partialFilenameChangedSubscription.unsubscribe();
   }
 
   queueUpload(fileList: FileList): void {

@@ -35,6 +35,7 @@ export class FileService {
 
   fileListEventEmitter: EventEmitter<FileList> = new EventEmitter();
   newFolderEventEmitter: EventEmitter<string> = new EventEmitter();
+  partialFilenameSearchEmitter: EventEmitter<string> = new EventEmitter();
 
   constructor(private http: HttpClient) { }
 

@@ -78,6 +78,10 @@ export class FileComponent implements OnInit {
 
       this.createNewFolder(newFolder);
     });
+
+    this.fileService.partialFilenameSearchEmitter.subscribe(partialFilename => {
+      console.log(partialFilename);
+    });
   }
 
   ngOnInit() {

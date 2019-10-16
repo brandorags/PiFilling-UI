@@ -32,6 +32,7 @@ import { MatButtonModule,
   MatDividerModule,
   MatDialogModule,
   MatProgressSpinnerModule,
+  MatAutocompleteModule,
   MatSnackBarModule,
   MAT_SNACK_BAR_DEFAULT_OPTIONS
 } from '@angular/material';
@@ -54,6 +55,7 @@ import { MatButtonModule,
     MatDividerModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatAutocompleteModule,
     MatSnackBarModule
   ],
   exports: [
@@ -73,6 +75,7 @@ import { MatButtonModule,
     MatDividerModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatAutocompleteModule,
     MatSnackBarModule
   ],
   providers: [
