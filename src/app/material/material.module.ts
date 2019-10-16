@@ -31,6 +31,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
@@ -52,6 +53,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatDividerModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatAutocompleteModule,
     MatSnackBarModule
   ],
   exports: [
@@ -71,6 +73,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatDividerModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatAutocompleteModule,
     MatSnackBarModule
   ],
   providers: [
