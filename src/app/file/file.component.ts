@@ -16,7 +16,7 @@
 
 
 import { Component, OnInit, HostListener } from '@angular/core';
-import { HttpEventType } from '@angular/common/http';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 
@@ -24,6 +24,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { FileService } from './file.service';
+import { DownloadHelper } from './file-action/download-helper';
 
 import { RenameFileDialogComponent } from './rename-file-dialog/rename-file-dialog.component';
 import { DeleteFileDialogComponent } from './delete-file-dialog/delete-file-dialog.component';
@@ -32,6 +33,7 @@ import { MoveFileDialogComponent } from './move-file-dialog/move-file-dialog.com
 import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
 import { FileRename } from '../models/file/file-rename';
+import { FileDownload } from '../models/file/file-download';
 import { FileDelete } from '../models/file/file-delete';
 import { FileMove } from '../models/file/file-move';
 import { QueuedFile } from '../models/file/queued-file';
@@ -65,7 +67,8 @@ export class FileComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private fileService: FileService
+    private fileService: FileService,
+    private downloadHelper: DownloadHelper
   ) {
     this.fileService.fileListEventEmitter.subscribe(fileList => {
       this.queueUpload(fileList);
@@ -306,6 +309,27 @@ export class FileComponent implements OnInit {
           console.log(error);
         }
       );
+    });
+  }
+
+  downloadFiles(): void {
+    let filesToDownload = [];
+    for (let f of this.files) {
+      if (!f.isSelected) {
+        continue;
+      }
+
+      let fileToDownload = new FileDownload();
+      fileToDownload.filename = f.filename;
+      fileToDownload.path = this.folderPath.toString();
+
+      filesToDownload.push(fileToDownload);
+    }
+
+    this.fileService.downloadFiles(filesToDownload).subscribe(response => {
+      if (response instanceof HttpResponse) {
+        this.downloadHelper.saveFile(response);
+      }
     });
   }
 
