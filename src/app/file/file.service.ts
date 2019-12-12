@@ -24,6 +24,7 @@ import { map } from 'rxjs/operators';
 import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
 import { FileRename } from '../models/file/file-rename';
+import { FileDownload } from '../models/file/file-download';
 import { FileDelete } from '../models/file/file-delete';
 import { FileMove } from '../models/file/file-move';
 import { Folder } from '../models/file/folder';
@@ -67,6 +68,15 @@ export class FileService {
 
   renameFile(fileToRename: FileRename): Observable<string> {
     return this.http.post<string>(Constants.apiBaseUrl + 'api/file/rename-file', fileToRename, Constants.httpOptionsAuth);
+  }
+
+  downloadFiles(filesToDownload: FileDownload[]): Observable<any> {
+    const downloadRequest = new HttpRequest('POST', Constants.apiBaseUrl + 'api/file/download-files', filesToDownload, {
+      withCredentials: true,
+      responseType: 'blob'
+    });
+
+    return this.http.request<any>(downloadRequest);
   }
 
   deleteFiles(filesToDelete: FileDelete[]): Observable<any> {
