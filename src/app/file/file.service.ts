@@ -70,8 +70,8 @@ export class FileService {
     return this.http.post<string>(Constants.apiBaseUrl + 'api/file/rename-file', fileToRename, Constants.httpOptionsAuth);
   }
 
-  downloadFiles(filesToDownload: FileDownload[]): Observable<any> {
-    const downloadRequest = new HttpRequest('POST', Constants.apiBaseUrl + 'api/file/download-files', filesToDownload, {
+  downloadFiles(fileDownload: FileDownload): Observable<any> {
+    const downloadRequest = new HttpRequest('POST', Constants.apiBaseUrl + 'api/file/download-files', fileDownload, {
       withCredentials: true,
       responseType: 'blob'
     });
