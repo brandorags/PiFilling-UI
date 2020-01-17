@@ -319,18 +319,30 @@ export class FileComponent implements OnInit {
         continue;
       }
 
-      let fileToDownload = new FileDownload();
-      fileToDownload.filename = f.filename;
-      fileToDownload.path = this.folderPath.toString();
-
-      filesToDownload.push(fileToDownload);
+      filesToDownload.push(f);
     }
 
-    this.fileService.downloadFiles(filesToDownload).subscribe(response => {
-      if (response instanceof HttpResponse) {
-        this.downloadHelper.saveFile(response);
-      }
-    });
+    let fileDownload = new FileDownload();
+    fileDownload.path = this.folderPath.toString();
+    fileDownload.files = filesToDownload;
+
+    let filename: string;
+    this.fileService.downloadFiles(fileDownload)
+      .subscribe(response => {
+        if (response instanceof HttpResponse) {
+          filename = this.downloadHelper.saveFile(response);
+        }
+      })
+      .add(() => {
+        if (filename && filename.split('.').pop() === 'zip') {
+          let fileToDelete = new FileDelete();
+          fileToDelete.filename = filename;
+          fileToDelete.path = '';
+          fileToDelete.isDirectory = false;
+
+          this.fileService.deleteFiles([fileToDelete]).subscribe();
+        }
+      });
   }
 
   deleteFiles(): void {

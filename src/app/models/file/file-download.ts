@@ -1,4 +1,6 @@
+import { FileMetadata } from './file-metadata';
+
 export class FileDownload {
-  filename: string;
   path: string;
+  files: FileMetadata[];
 }
