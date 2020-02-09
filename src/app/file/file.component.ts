@@ -26,6 +26,8 @@ import { map } from 'rxjs/operators';
 import { SessionTimerService } from '../common/session-timer.service';
 import { FileService } from './file.service';
 import { DownloadHelper } from './file-action/download-helper';
+import { MoveHelper } from './file-action/move-helper';
+import { DeleteHelper } from './file-action/delete-helper';
 
 import { RenameFileDialogComponent } from './rename-file-dialog/rename-file-dialog.component';
 import { DeleteFileDialogComponent } from './delete-file-dialog/delete-file-dialog.component';
@@ -36,7 +38,6 @@ import { FileMetadata } from '../models/file/file-metadata';
 import { FileRename } from '../models/file/file-rename';
 import { FileDownload } from '../models/file/file-download';
 import { FileDelete } from '../models/file/file-delete';
-import { FileMove } from '../models/file/file-move';
 import { QueuedFile } from '../models/file/queued-file';
 import { Folder } from '../models/file/folder';
 import { FolderPath } from '../models/file/folder-path';
@@ -70,7 +71,9 @@ export class FileComponent implements OnInit {
     private dialog: MatDialog,
     private sessionTimerService: SessionTimerService,
     private fileService: FileService,
-    private downloadHelper: DownloadHelper
+    private downloadHelper: DownloadHelper,
+    private moveHelper: MoveHelper,
+    private deleteHelper: DeleteHelper
   ) {
     this.fileService.fileListEventEmitter.subscribe(fileList => {
       this.queueUpload(fileList);
@@ -281,36 +284,10 @@ export class FileComponent implements OnInit {
     });
 
     moveFileDialog.afterClosed().subscribe(destinationFolder => {
-      if (!destinationFolder) {
-        return;
+      if (destinationFolder) {
+        let destinationPath = `${destinationFolder.path}/${destinationFolder.name}`;
+        this.moveHelper.moveFiles(this.files, this.folderPath.toString(), destinationPath);
       }
-
-      let destinationPath = `${destinationFolder.path}/${destinationFolder.name}`;
-      let filesToMove = [];
-      for (let f of this.files) {
-        if (f.isSelected) {
-          let fileToMove = new FileMove();
-          fileToMove.filename = f.filename;
-          fileToMove.sourcePath = `${this.folderPath.toString()}/${f.filename}`;
-          fileToMove.destinationPath = destinationPath;
-
-          filesToMove.push(fileToMove);
-        }
-      }
-
-      this.fileService.moveFiles(filesToMove).subscribe(
-        () => {
-          for (let movedFile of filesToMove) {
-            let movedFileIndex = this.files.findIndex(f => f.filename === movedFile.filename);
-            if (movedFileIndex !== -1) {
-              this.files.splice(movedFileIndex, 1);
-            }
-          }
-        },
-        error => {
-          console.log(error);
-        }
-      );
     });
   }
 
@@ -353,33 +330,10 @@ export class FileComponent implements OnInit {
     const deleteFileDialog = this.dialog.open(DeleteFileDialogComponent, {
       width: '350px'
     });
+
     deleteFileDialog.afterClosed().subscribe(deleteFileConfirmed => {
       if (deleteFileConfirmed) {
-        let filesToDelete = [];
-        for (let f of this.files) {
-          if (f.isSelected) {
-            let fileToDelete = new FileDelete();
-            fileToDelete.filename = f.filename;
-            fileToDelete.path = this.folderPath.toString();
-            fileToDelete.isDirectory = f.isDirectory;
-
-            filesToDelete.push(fileToDelete);
-          }
-        }
-
-        this.fileService.deleteFiles(filesToDelete).subscribe(
-          () => {
-            for (let deletedFile of filesToDelete) {
-              let deletedFileIndex = this.files.findIndex(f => f.filename === deletedFile.filename);
-              if (deletedFileIndex !== -1) {
-                this.files.splice(deletedFileIndex, 1);
-              }
-            }
-          },
-          error => {
-            console.log(error);
-          }
-        );
+        this.deleteHelper.deleteFiles(this.files, this.folderPath.toString());
       }
     });
   }
