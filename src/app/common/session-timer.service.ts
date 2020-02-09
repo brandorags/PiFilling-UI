@@ -47,7 +47,7 @@ export class SessionTimerService {
       if (counter >= Constants.lengthOfSession) {
         this.stopTimer();
         this.authService.logout().subscribe(
-          success => {
+          () => {
             console.log('You have been logged out due to inactivity.');
             this.router.navigate(['/login']);
           },

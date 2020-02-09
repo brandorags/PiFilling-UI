@@ -23,6 +23,7 @@ import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { SessionTimerService } from '../common/session-timer.service';
 import { FileService } from './file.service';
 import { DownloadHelper } from './file-action/download-helper';
 
@@ -67,6 +68,7 @@ export class FileComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
+    private sessionTimerService: SessionTimerService,
     private fileService: FileService,
     private downloadHelper: DownloadHelper
   ) {
@@ -332,6 +334,8 @@ export class FileComponent implements OnInit {
         if (response instanceof HttpResponse) {
           filename = this.downloadHelper.saveFile(response);
         }
+
+        this.sessionTimerService.refreshTimer();
       })
       .add(() => {
         if (filename && filename.split('.').pop() === 'zip') {
@@ -472,6 +476,8 @@ export class FileComponent implements OnInit {
               this.files.push(fileMetadata);
             }
         }
+
+        this.sessionTimerService.refreshTimer();
       },
       error => {
         console.log(error);
