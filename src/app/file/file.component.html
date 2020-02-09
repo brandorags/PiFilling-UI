@@ -49,12 +49,13 @@ limitations under the License.
     <mat-grid-tile *ngFor="let file of files">
       <mat-card id="file_{{file.filename}}" [shAttachMenu]="fileMenu" [shMenuData]="file" *ngIf="!file.isDirectory; else folderCard"
       class="file-card" tabindex="0" (contextmenu)="onCardClick($event, file, true)" (click)="onCardClick($event, file, false)">
-        <span *ngIf="file.isImageFile(); else nonImageFileCard">
+        <mat-icon>insert_drive_file</mat-icon>
+        <!-- <span *ngIf="file.isImageFile(); else nonImageFileCard">
           <img mat-card-image src="{{fileStorageBaseUrl}}{{folderPath}}/{{file.filename}}" alt="{{file.filename}}">
         </span>
         <ng-template #nonImageFileCard>
-          <mat-icon>insert_drive_file</mat-icon>          
-        </ng-template>
+          <mat-icon>insert_drive_file</mat-icon>       
+        </ng-template> -->
         <mat-card-content>
           {{file.filename}}
         </mat-card-content>
