@@ -26,6 +26,7 @@ import { map } from 'rxjs/operators';
 import { SessionTimerService } from '../common/session-timer.service';
 import { FileService } from './file.service';
 import { DownloadHelper } from './file-action/download-helper';
+import { RenameHelper } from './file-action/rename-helper';
 import { MoveHelper } from './file-action/move-helper';
 import { DeleteHelper } from './file-action/delete-helper';
 
@@ -35,7 +36,6 @@ import { MoveFileDialogComponent } from './move-file-dialog/move-file-dialog.com
 
 import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
-import { FileRename } from '../models/file/file-rename';
 import { QueuedFile } from '../models/file/queued-file';
 import { Folder } from '../models/file/folder';
 import { FolderPath } from '../models/file/folder-path';
@@ -70,6 +70,7 @@ export class FileComponent implements OnInit {
     private sessionTimerService: SessionTimerService,
     private fileService: FileService,
     private downloadHelper: DownloadHelper,
+    private renameHelper: RenameHelper,
     private moveHelper: MoveHelper,
     private deleteHelper: DeleteHelper
   ) {
@@ -246,27 +247,10 @@ export class FileComponent implements OnInit {
       width: '350px',
       data: { filename: '' }
     });
-    renameFileDialog.afterClosed().subscribe(filename => {
-      if (filename !== undefined) {
-        let fileMetadata: FileMetadata = event.data;
-        let fileToRename = new FileRename();
-        fileToRename.oldFilename = fileMetadata.filename;
-        fileToRename.newFilename = filename + fileMetadata.fileType;
-        fileToRename.path = this.folderPath.toString();
 
-        this.fileService.renameFile(fileToRename).subscribe(
-          newFilename => {
-            for (let file of this.files) {
-              if (file.filename === fileToRename.oldFilename) {
-                file.filename = newFilename;
-                break;
-              }
-            }
-          },
-          error => {
-            console.log(error);
-          }
-        );
+    renameFileDialog.afterClosed().subscribe(filename => {
+      if (filename) {
+        this.renameHelper.renameFile(event.data, filename, this.files, this.folderPath.toString());
       }
     });
   }
