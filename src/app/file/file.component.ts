@@ -16,7 +16,7 @@
 
 
 import { Component, OnInit, HostListener } from '@angular/core';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpEventType } from '@angular/common/http';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 
@@ -36,8 +36,6 @@ import { MoveFileDialogComponent } from './move-file-dialog/move-file-dialog.com
 import { Constants } from '../common/constants';
 import { FileMetadata } from '../models/file/file-metadata';
 import { FileRename } from '../models/file/file-rename';
-import { FileDownload } from '../models/file/file-download';
-import { FileDelete } from '../models/file/file-delete';
 import { QueuedFile } from '../models/file/queued-file';
 import { Folder } from '../models/file/folder';
 import { FolderPath } from '../models/file/folder-path';
@@ -292,38 +290,7 @@ export class FileComponent implements OnInit {
   }
 
   downloadFiles(): void {
-    let filesToDownload = [];
-    for (let f of this.files) {
-      if (!f.isSelected) {
-        continue;
-      }
-
-      filesToDownload.push(f);
-    }
-
-    let fileDownload = new FileDownload();
-    fileDownload.path = this.folderPath.toString();
-    fileDownload.files = filesToDownload;
-
-    let filename: string;
-    this.fileService.downloadFiles(fileDownload)
-      .subscribe(response => {
-        if (response instanceof HttpResponse) {
-          filename = this.downloadHelper.saveFile(response);
-        }
-
-        this.sessionTimerService.refreshTimer();
-      })
-      .add(() => {
-        if (filename && filename.split('.').pop() === 'zip') {
-          let fileToDelete = new FileDelete();
-          fileToDelete.filename = filename;
-          fileToDelete.path = '';
-          fileToDelete.isDirectory = false;
-
-          this.fileService.deleteFiles([fileToDelete]).subscribe();
-        }
-      });
+    this.downloadHelper.downloadFiles(this.files, this.folderPath.toString());
   }
 
   deleteFiles(): void {
