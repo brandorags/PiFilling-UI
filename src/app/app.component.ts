@@ -61,6 +61,9 @@ export class AppComponent implements OnInit {
       this.isUserLoggedIn = false;
     } else {
       this.isUserLoggedIn = true;
+      if (!this.sessionTimerService.isTimerRunning()) {
+        this.sessionTimerService.startTimer();
+      }
     }
   }
 
