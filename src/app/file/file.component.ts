@@ -16,15 +16,14 @@
 
 
 import { Component, OnInit, HostListener } from '@angular/core';
-import { HttpEventType } from '@angular/common/http';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { SessionTimerService } from '../common/session-timer.service';
 import { FileService } from './file.service';
+import { UploadHelper } from './file-action/upload-helper';
 import { DownloadHelper } from './file-action/download-helper';
 import { RenameHelper } from './file-action/rename-helper';
 import { MoveHelper } from './file-action/move-helper';
@@ -67,15 +66,15 @@ export class FileComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private sessionTimerService: SessionTimerService,
     private fileService: FileService,
+    private uploadHelper: UploadHelper,
     private downloadHelper: DownloadHelper,
     private renameHelper: RenameHelper,
     private moveHelper: MoveHelper,
     private deleteHelper: DeleteHelper
   ) {
     this.fileService.fileListEventEmitter.subscribe(fileList => {
-      this.queueUpload(fileList);
+      this.uploadFiles(fileList);
     });
 
     this.fileService.newFolderEventEmitter.subscribe(folderName => {
@@ -225,21 +224,23 @@ export class FileComponent implements OnInit {
     this.queuedFiles = [];
   }
 
-  queueUpload(event: any): void {
+  uploadFiles(event: any): void {
     let items = event.dataTransfer.items;
+    let filesToUpload = [];
     for (let i = 0; i < items.length; i++) {
       let item = items[i];
-      if (item.kind !== 'file') {
-        continue;
-      }
-
-      let entry = item.webkitGetAsEntry();
-      if (entry.isFile) {
-        this.prepareFileForUpload(entry);
-      } else if (entry.isDirectory) {
-        this.prepareDirectoryForUpload(entry);
+      if (item.kind === 'file') {
+        let entry = item.webkitGetAsEntry();
+        filesToUpload.push(entry);
       }
     }
+
+    this.uploadHelper.uploadFiles(filesToUpload, this.files, this.queuedFiles,
+      this.queuedFilesRemaining, this.folderPath.toString());
+  }
+
+  downloadFiles(): void {
+    this.downloadHelper.downloadFiles(this.files, this.folderPath.toString());
   }
 
   renameFile(event: any): void {
@@ -273,10 +274,6 @@ export class FileComponent implements OnInit {
     });
   }
 
-  downloadFiles(): void {
-    this.downloadHelper.downloadFiles(this.files, this.folderPath.toString());
-  }
-
   deleteFiles(): void {
     const deleteFileDialog = this.dialog.open(DeleteFileDialogComponent, {
       width: '350px'
@@ -287,107 +284,6 @@ export class FileComponent implements OnInit {
         this.deleteHelper.deleteFiles(this.files, this.folderPath.toString());
       }
     });
-  }
-
-  private prepareFileForUpload(fileEntry: any): void {
-    let filePath = this.folderPath.toString() + fileEntry.fullPath;
-    let filePathWithFilenameRemoved = filePath.slice(0, filePath.lastIndexOf('/'));
-
-    let fileEntryPromise = new Promise((resolve, reject) => {
-      fileEntry.file(
-        (file: File) => {
-          resolve(file);
-        },
-        (error: any) => {
-          reject(error);
-        }
-      );
-    });
-
-    fileEntryPromise.then((file: File) => {
-      let formData = new FormData();
-      formData.append(file.name, file, file.name);
-
-      this.uploadFile(file.name, formData, filePathWithFilenameRemoved);
-    });
-  }
-
-  private prepareDirectoryForUpload(directoryEntry: any): void {
-    let directoryPath = this.folderPath.toString() + directoryEntry.fullPath;
-    let directoryPathWithLastFolderRemoved = directoryPath.slice(0, directoryPath.lastIndexOf('/'));
-    let directoryName = directoryEntry.name;
-
-    let folder = new Folder();
-    folder.name = directoryName;
-    folder.path = directoryPathWithLastFolderRemoved;
-
-    this.fileService.createNewFolder(folder).subscribe(
-      createdFolder => {
-        let folderMetadata = new FileMetadata(createdFolder.name, 0, null, null, true, false);
-
-        // only add to the files list if the folder is in the current path
-        if (directoryPathWithLastFolderRemoved === this.folderPath.toString()) {
-          this.files.push(folderMetadata);
-        }
-      },
-      error => {
-        console.log(error);
-      }
-    )
-    .add(() => {
-      let directoryReader = directoryEntry.createReader();
-      let directoryReaderPromise = new Promise((resolve, reject) => {
-        directoryReader.readEntries(
-          (entries: any) => {
-            resolve(entries);
-          },
-          (error: any) => {
-            reject(error);
-          }
-        );
-      });
-
-      directoryReaderPromise.then((entries: any) => {
-        for (let entry of entries) {
-          if (entry.isFile) {
-            this.prepareFileForUpload(entry);
-          } else if (entry.isDirectory) {
-            this.prepareDirectoryForUpload(entry);
-          }
-        }
-      });
-    });
-  }
-
-  private uploadFile(filename: string, formData: FormData, folderPath: string): void {
-    let isFileInCurrentFolderPath = (folderPath === this.folderPath.toString());
-
-    let queuedFile = new QueuedFile(isFileInCurrentFolderPath ? filename : `${folderPath}/${filename}`, 0);
-    this.queuedFiles.push(queuedFile);
-    this.queuedFilesRemaining++;
-
-    this.fileService.uploadFile(formData, folderPath).subscribe(
-      event => {
-        switch (event.type) {
-          case HttpEventType.UploadProgress:
-            queuedFile.uploadProgress = Math.round(100 * event.loaded / event.total);
-            break;
-          case HttpEventType.Response:
-            let fileMetadata = new FileMetadata(event.body.filename, event.body.fileSize,
-              event.body.fileType, event.body.modifiedDate, event.body.isDirectory, false);
-            this.queuedFilesRemaining--;
-
-            if (isFileInCurrentFolderPath) {
-              this.files.push(fileMetadata);
-            }
-        }
-
-        this.sessionTimerService.refreshTimer();
-      },
-      error => {
-        console.log(error);
-      }
-    );
   }
 
   private createNewFolder(newFolder: Folder): void {
