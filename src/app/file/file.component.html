@@ -44,7 +44,7 @@ limitations under the License.
 </div>
 
 <!-- file card grid -->
-<div class="file-card-container" (click)="unselectAllCards()" (drop)="queueUpload($event)">
+<div class="file-card-container" (click)="unselectAllCards()" (drop)="uploadFiles($event)">
   <mat-grid-list *ngIf="!loadingFiles; else loadingSpinner" cols="{{(isHandset$ | async) ? 1 : 3}}" rowHeight="375px">
     <mat-grid-tile *ngFor="let file of files">
       <mat-card id="file_{{file.filename}}" [shAttachMenu]="fileMenu" [shMenuData]="file" *ngIf="!file.isDirectory; else folderCard"
