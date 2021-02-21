@@ -33,9 +33,9 @@ export class LoginComponent implements OnInit {
 
   user = new User();
 
-  @ViewChild('usernameTextbox')
+  @ViewChild('usernameTextbox', { static: true })
   usernameTextbox: any;
-  @ViewChild('loginButton')
+  @ViewChild('loginButton', { static: true })
   loginButton: any;
 
   constructor(
