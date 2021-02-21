@@ -23,7 +23,7 @@
     "@angular/router": "^11.2.1",
     "context-menu-angular6": "0.0.6",
     "core-js": "^2.5.4",
-    "file-saver": "^2.0.2",
+    "file-saver": "^2.0.5",
     "ng2-simple-timer": "^6.0.0",
     "rxjs": "^6.6.3",
     "tslib": "^2.0.0",
