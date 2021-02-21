@@ -17,7 +17,7 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthenticationService } from '../common/authentication.service';
 import { SessionTimerService } from '../common/session-timer.service';
