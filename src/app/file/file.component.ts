@@ -92,6 +92,13 @@ export class FileComponent implements OnInit {
     this.initFileDrop();
   }
 
+  navigateToHomeFolder(): void {
+    if (this.folderPath.pathArray.length > 0) {
+      this.folderPath.pathArray = [];
+      this.getFiles(this.folderPath.toString());
+    } 
+  }
+
   navigateFromFolderPath(folderIndex: number): void {
     this.folderPath.pathArray.length = folderIndex + 1;
     this.getFiles(this.folderPath.toString());

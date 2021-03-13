@@ -17,29 +17,23 @@ limitations under the License.
 
 <!-- folder breadcrumb path -->
 <div class="folder-path">
+  <button mat-button (click)="navigateToHomeFolder()">
+    <mat-icon inline="true">home</mat-icon> Home
+  </button>
   <span *ngFor="let folder of folderPath.pathArray; index as folderIndex; first as isFirst; last as isLast">
-      <span *ngIf="isFirst && folderPath.pathArray.length === 1; else multipleFolderLogic">
-        <button mat-button>
-          <mat-icon inline="true">home</mat-icon> {{folder}}
-        </button>
-      </span>
-      <ng-template #multipleFolderLogic>
-        <span *ngIf="isFirst">
-          <button mat-button (click)="navigateFromFolderPath(folderIndex)">
-            <mat-icon inline="true">home</mat-icon> {{folder}}
-          </button> <mat-icon>keyboard_arrow_right</mat-icon>
-        </span>
-        <span *ngIf="!isFirst && !isLast">
-          <button mat-button (click)="navigateFromFolderPath(folderIndex)">
-            <mat-icon inline="true">folder</mat-icon> {{folder}}
-          </button> <mat-icon inline="true">keyboard_arrow_right</mat-icon>
-        </span>
-        <span *ngIf="isLast">
-          <button mat-button>
-            <mat-icon inline="true">folder</mat-icon> {{folder}}
-          </button>
-        </span>
-      </ng-template>
+    <span *ngIf="isFirst">
+      <mat-icon>keyboard_arrow_right</mat-icon>
+    </span>
+    <span *ngIf="!isLast">
+      <button mat-button (click)="navigateFromFolderPath(folderIndex)">
+        <mat-icon inline="true">folder</mat-icon> {{folder}}
+      </button> <mat-icon inline="true">keyboard_arrow_right</mat-icon>
+    </span>
+    <span *ngIf="isLast">
+      <button mat-button>
+        <mat-icon inline="true">folder</mat-icon> {{folder}}
+      </button>
+    </span>
   </span>
 </div>
 
