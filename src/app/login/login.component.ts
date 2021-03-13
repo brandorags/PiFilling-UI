@@ -17,7 +17,7 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthenticationService } from '../common/authentication.service';
 import { SessionTimerService } from '../common/session-timer.service';
@@ -33,9 +33,9 @@ export class LoginComponent implements OnInit {
 
   user = new User();
 
-  @ViewChild('usernameTextbox')
+  @ViewChild('usernameTextbox', { static: true })
   usernameTextbox: any;
-  @ViewChild('loginButton')
+  @ViewChild('loginButton', { static: true })
   loginButton: any;
 
   constructor(

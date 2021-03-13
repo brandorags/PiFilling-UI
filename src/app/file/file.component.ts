@@ -16,7 +16,8 @@
 
 
 import { Component, OnInit, HostListener } from '@angular/core';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 
 import { Observable } from 'rxjs';
