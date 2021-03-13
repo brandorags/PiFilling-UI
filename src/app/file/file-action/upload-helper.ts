@@ -106,7 +106,9 @@ export class UploadHelper {
       directoryReaderPromise.then((entries: any) => {
         for (let entry of entries) {
           if (entry.isFile) {
-            this.prepareFileForUpload(entry, folderPath);
+            let filePath = folderPath + entry.fullPath;
+            let filePathWithFilenameRemoved = filePath.slice(0, filePath.lastIndexOf('/'));
+            this.prepareFileForUpload(entry, filePathWithFilenameRemoved);
           } else if (entry.isDirectory) {
             this.prepareDirectoryForUpload(entry, folderPath);
           }

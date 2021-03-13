@@ -88,8 +88,6 @@ export class FileComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.folderPath.pathArray.push(localStorage.getItem(Constants.usernameLocalStorageKey));
-
     this.getFiles(this.folderPath.toString());
     this.initFileDrop();
   }
