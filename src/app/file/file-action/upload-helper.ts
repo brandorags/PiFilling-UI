@@ -30,7 +30,7 @@ export class UploadHelper {
 
     for (let i = 0; i < filesToUpload.length; i++) {
       let entry = filesToUpload[i];
-      if (entry.isFile) {
+      if (entry.isFile || entry instanceof File) {
         this.prepareFileForUpload(entry, folderPath);
       } else if (entry.isDirectory) {
         this.prepareDirectoryForUpload(entry, folderPath);
@@ -39,26 +39,33 @@ export class UploadHelper {
   }
 
   private prepareFileForUpload(fileEntry: any, folderPath: string): void {
-    let filePath = folderPath + fileEntry.fullPath;
+    let filePath = `${folderPath}/${fileEntry.name}`;
     let filePathWithFilenameRemoved = filePath.slice(0, filePath.lastIndexOf('/'));
 
-    let fileEntryPromise = new Promise((resolve, reject) => {
-      fileEntry.file(
-        (file: File) => {
-          resolve(file);
-        },
-        (error: any) => {
-          reject(error);
-        }
-      );
-    });
-
-    fileEntryPromise.then((file: File) => {
+    if (fileEntry instanceof File) {
       let formData = new FormData();
-      formData.append(file.name, file, file.name);
+      formData.append(fileEntry.name, fileEntry, fileEntry.name);
 
-      this.uploadFile(file.name, formData, folderPath, filePathWithFilenameRemoved);
-    });
+      this.uploadFile(fileEntry.name, formData, folderPath, filePathWithFilenameRemoved);
+    } else {
+      let fileEntryPromise = new Promise((resolve, reject) => {
+        fileEntry.file(
+          (file: File) => {
+            resolve(file);
+          },
+          (error: any) => {
+            reject(error);
+          }
+        );
+      });
+  
+      fileEntryPromise.then((file: File) => {
+        let formData = new FormData();
+        formData.append(file.name, file, file.name);
+  
+        this.uploadFile(file.name, formData, folderPath, filePathWithFilenameRemoved);
+      });
+    }
   }
 
   private prepareDirectoryForUpload(directoryEntry: any, folderPath: string): void {

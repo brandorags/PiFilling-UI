@@ -226,13 +226,15 @@ export class FileComponent implements OnInit {
   }
 
   uploadFiles(event: any): void {
-    let items = event.dataTransfer.items;
+    let items = (event instanceof DragEvent) ? event.dataTransfer.items : event;
     let filesToUpload = [];
     for (let i = 0; i < items.length; i++) {
       let item = items[i];
-      if (item.kind === 'file') {
+      if (item instanceof DataTransferItem && item.kind === 'file') {
         let entry = item.webkitGetAsEntry();
         filesToUpload.push(entry);
+      } else {
+        filesToUpload.push(item);
       }
     }
 
